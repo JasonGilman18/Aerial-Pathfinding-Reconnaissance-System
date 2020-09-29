@@ -1,0 +1,15 @@
+{
+  "name": "aprs-desktop-app",
+  "version": "1.0.0",
+  "description": "a desktop application for the Aerial Reconnaisance Pathfinding System",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Jason Gilman",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^10.1.2"
+  }
+}
