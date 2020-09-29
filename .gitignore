@@ -1,2 +1,24 @@
-# ignore aprs-desktop-app node_modules folder
+# ignore aprs-desktop-app files
 aprs-desktop-app/node_modules/
+
+# ignore aprs-desktop-app/frontend files
+aprs-desktop-app/frontend/node_modules
+aprs-desktop-app/frontend/.pnp
+aprs-desktop-app/frontend/.pnp.js
+aprs-desktop-app/frontend/coverage
+aprs-desktop-app/frontend/build
+aprs-desktop-app/frontend/.DS_Store
+aprs-desktop-app/frontend/.env.local
+aprs-desktop-app/frontend/.env.development.local
+aprs-desktop-app/frontend/.env.test.local
+aprs-desktop-app/frontend/.env.production.local
+aprs-desktop-app/frontend/npm-debug.log*
+aprs-desktop-app/frontend/yarn-debug.log*
+aprs-desktop-app/frontend/yarn-error.log*
+
+#ignore aprs-desktop-app/backend files
+aprs-desktop-app/backend/env
+aprs-desktop-app/backend/__pycache__
+aprs-desktop-app/backend/build
+aprs-desktop-app/backend/dist
+aprs-desktop-app/backend/server.spec

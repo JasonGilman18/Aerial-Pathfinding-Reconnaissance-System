@@ -4,12 +4,14 @@
   "description": "a desktop application for the Aerial Reconnaisance Pathfinding System",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "cd frontend && npm run build && cd .. && electron ."
   },
   "keywords": [],
   "author": "Jason Gilman",
   "license": "ISC",
   "dependencies": {
-    "electron": "^10.1.2"
+    "child_process": "^1.0.2",
+    "electron": "^10.1.2",
+    "request-promise": "^4.2.6"
   }
 }
