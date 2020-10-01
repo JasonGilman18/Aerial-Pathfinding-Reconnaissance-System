@@ -1,0 +1,9 @@
+text: #d2d6dc
+accent: #499C9F
+side-bar: #4F5B66
+side-bar division: #65737E
+side-bar label: #343D46
+load-bar background: #D2D6DC
+load-bar fill: #499C9F
+footer/header: #65737E
+main background: #343D46

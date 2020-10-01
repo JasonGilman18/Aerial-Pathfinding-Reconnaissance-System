@@ -1,0 +1,10 @@
+#sidebarBox
+{
+    height: 770px;
+    width: 300px;
+    min-width: 300px;
+    background-color: #4F5B66;
+    overflow: auto;
+    position: absolute;
+    left: 0px;
+}

@@ -1,0 +1,12 @@
+#consoleBox
+{
+    height: 770px;
+    min-height: 770px;
+    width: 100%;
+    min-width: 100%;
+    background-color: #343D46;
+    overflow: auto;
+    position: absolute;
+    left: 300px;
+    padding: 25px;
+}
