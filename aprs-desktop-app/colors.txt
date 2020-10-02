@@ -1,5 +1,5 @@
 text: #d2d6dc
-accent: #499C9F
+accent: #499C9F  duller: #38787a
 side-bar: #4F5B66
 side-bar division: #65737E
 side-bar label: #343D46

@@ -15,10 +15,8 @@ class Main extends React.Component<MainProps, MainStates>
     render()
     {
         return(
-            <Container fluid style={{margin: '0', padding: '0'}}>
-                <Container fluid id="topRow">
-                    <Header/>
-                </Container>
+            <Container fluid id="mainContainer">
+                <Header/>
                 <Container fluid id="middleRow">
                     <Sidebar/>
                     <Console/>

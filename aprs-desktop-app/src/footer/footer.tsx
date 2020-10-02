@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Container, Row, Col} from 'react-bootstrap';
+import {Container} from 'react-bootstrap';
+import './footer.css';
 
 type FooterProps = {};
 type FooterStates = {};
@@ -9,9 +10,9 @@ class Footer extends React.Component<FooterProps, FooterStates>
     render()
     {
         return(
-            <Container fluid id="main">
-
-            </Container>
+            <div id="footerBar">
+                
+            </div>
         );
     }
 }
