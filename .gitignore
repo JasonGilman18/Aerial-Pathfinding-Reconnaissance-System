@@ -22,3 +22,7 @@ aprs-desktop-app/backend/aprsServer.spec
 
 #ignore map images
 aprs-desktop-app/static
+
+#ignore .vscode
+aprs-dekstop-app/.vscode
+.vscode
