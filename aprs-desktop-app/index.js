@@ -1,4 +1,5 @@
 const electron = require('electron');
+const child_process = require('child_process');
 const app = electron.app;
 const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
@@ -11,7 +12,8 @@ let apiUrl = "http://127.0.0.1:5000";
 app.on('ready', function(){
 
     //path to the python server
-    subpy = require('child_process').spawn('./backend/dist/server');
+    subpy = require('child_process').spawn('./backend/dist/aprsServer.exe', {detached: true});
+    //subpy = child_process.execFile('./backend/dist/aprsServer.exe');
 
     //window height and width upon first opening
     //path to the main html file (index.html)

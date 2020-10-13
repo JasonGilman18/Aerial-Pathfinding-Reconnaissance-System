@@ -27,8 +27,6 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.3);
-    box-shadow: 0 0 6px rgba(0,0,0,0.3);
 }
 
 #logoBox
@@ -71,7 +69,7 @@
     overflow-y: auto;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    color: #d2d6dc;
+    color: #c8cdd0;
 }
 
 #progressBox p

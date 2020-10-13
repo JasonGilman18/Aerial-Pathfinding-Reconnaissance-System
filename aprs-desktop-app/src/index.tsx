@@ -1,5 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 import ReactDOM from 'react-dom';
+import {animateScroll} from 'react-scroll';
 import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Console from './console/console';
@@ -10,14 +11,20 @@ import logoIcon from './icons/logo.png';
 import Step from './step/step';
 
 type MainProps = {};
-type MainStates = {selectedStep: number, stepStatus: Array<string>};
+type MainStates = {selectedStep: number, stepStatus: Array<string>, progressMessages: Array<string>};
 class Main extends React.Component<MainProps, MainStates>
 {
     constructor(props: any)
     {
         super(props);
-        this.state = {selectedStep: 0, stepStatus: ["inprogress", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete"]};
+        this.state = {
+                        selectedStep: 0, 
+                        stepStatus: ["inprogress", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete"], 
+                        progressMessages: ["----Welcome----"]
+                    };
+
         this.updateSelectedStep = this.updateSelectedStep.bind(this);
+        this.updateStepStatus = this.updateStepStatus.bind(this);
     }
     
     updateSelectedStep(i: number)
@@ -28,9 +35,36 @@ class Main extends React.Component<MainProps, MainStates>
     updateStepStatus(i: number, status: string)
     {
         var tempStepStatus = this.state.stepStatus;
+        var similar = tempStepStatus[i] == status;
         tempStepStatus[i] = status;
-        console.log(i + " updated to " + status);
         this.setState({stepStatus: tempStepStatus});
+
+        var message = "";
+        if(status == "error")
+        {
+            message = "Step " + (i+1) + " has errors!";
+        }
+        else if(status == "inprogress")
+        {
+            if(similar)
+                message = "Step " + (i+1) + " resumed...";
+            else
+                message = "Step " + (i+1) + " started...";
+        }
+        else if(status == "complete")
+        {
+            message = "Step " + (i+1) + " completed without errors!";
+        }
+        this.pushMessageToProgress(message);
+    }
+
+    pushMessageToProgress(message: string)
+    {
+        var tempMessageArray = this.state.progressMessages;
+        tempMessageArray.push(message);
+        this.setState({progressMessages: tempMessageArray});
+        animateScroll.scrollToBottom({containerId: "progressBox", delay: 0, smooth: true});
+        animateScroll.scrollMore(100, {containerId: "progressBox", delay: 0, smooth: true});
     }
 
     render()
@@ -54,13 +88,11 @@ class Main extends React.Component<MainProps, MainStates>
                             <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[7]} position="last" number={8} description="Begin Land Drone Excursion"/>
                         </div>
                         <div id="progressBox">
-                            <p>---- starting step 1 -----</p>
-                            <p>5%</p>
-                            <p>6%</p>
-                            <p>7%</p>
-                            <p>8%</p>
-                            <p>9%</p>
-                            <p>10%</p>
+                            {
+                                this.state.progressMessages.map(message => (
+                                    <p>{message}</p>
+                                ))
+                            }
                         </div>
                     </div>                    
                     <Console onNextButtonClick={this.updateSelectedStep.bind(this)} stepStatus={this.state.stepStatus} onUpdateStepStatus={this.updateStepStatus.bind(this)} display={this.state.selectedStep}/>

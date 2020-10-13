@@ -1,7 +1,7 @@
 .stepBox
 {
     background-color: #65737E;
-    color: #d2d6dc;
+    color: #21262c;
     width: 225px;
     height: 75px;
     border-radius: 10px;
@@ -24,6 +24,7 @@
     flex: 1 0 80%;
     border-right: 7px solid #343D46;
     padding: 5px 10px 5px 10px;
+    text-align: center;
 }
 
 .stepNameArea h5
@@ -34,6 +35,7 @@
 .stepNameArea h6
 {
     font-size: .7em;
+    font-weight: 600;
 }
 
 .stepStatus
@@ -53,7 +55,7 @@
     box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
 }
 
-.status.incomplete{background-color: #343D46;}
+.status.incomplete{background-color: #444e55;}
 .status.inprogress{background-color: blue;}
 .status.error{background-color: red;}
 .status.complete{background-color: green;}

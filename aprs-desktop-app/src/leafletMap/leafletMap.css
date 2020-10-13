@@ -1,0 +1,20 @@
+#mapid
+{
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    height: 400px;
+    width: 400px;
+}
+
+.leaflet-div-icon
+{
+    background: transparent;
+    border: none;
+}
+
+#markerIcon
+{
+    height: 40px;
+    width: 25px;
+}
