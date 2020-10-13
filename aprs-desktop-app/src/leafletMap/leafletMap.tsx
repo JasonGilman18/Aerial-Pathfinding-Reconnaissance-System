@@ -16,16 +16,7 @@ class LeafMap extends React.Component<LeafMapProps, LeafMapStates>
     constructor(props: any)
     {
         super(props);
-        //this.addMarker = this.addMarker.bind(this);
     }
-
-    /*
-    addMarker(e: LeafletMouseEvent)
-    {
-        this.props.markers.push(e.latlng);
-        console.log(e.latlng);
-    }
-    */
 
     render() 
     {
@@ -36,7 +27,7 @@ class LeafMap extends React.Component<LeafMapProps, LeafMapStates>
 
         return (
             
-            <Map id="mapid" onClick={this.props.onMapClick()} center={[30.6188, -96.3365]} zoom={8}>
+            <Map id="mapid" onClick={(e: LeafletMouseEvent) => this.props.onMapClick(e)} center={[30.6188, -96.3365]} zoom={8}>
                 <TileLayer url="http://localhost:5000/map/{z}/{x}/{y}"/>
                 {this.props.markers.map((position) =>
                     <Marker icon={customMarkerIcon} position={position}></Marker>

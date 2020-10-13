@@ -43,6 +43,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
     {
         var temp = this.state.mapMarkers;
         temp.push(e.latlng);
+        console.log(e.latlng);
         this.setState({mapMarkers: temp});
     }
 
@@ -172,7 +173,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                         <Container fluid className="bottomRow">
                             <LeafMap markers={this.state.mapMarkers} onMapClick={this.updateMarkers.bind(this)}></LeafMap>
                             {this.state.mapMarkers.map((position) =>
-                                <p>{position}</p>
+                                <p>{"Lat: " + position.lat + " Lng: " + position.lng}</p>
                             )}
                         </Container>
                     </div>
