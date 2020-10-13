@@ -18,4 +18,7 @@ aprs-desktop-app/backend/env
 aprs-desktop-app/backend/__pycache__
 aprs-desktop-app/backend/build
 aprs-desktop-app/backend/dist
-aprs-desktop-app/backend/server.spec
+aprs-desktop-app/backend/aprsServer.spec
+
+#ignore map images
+aprs-desktop-app/static
