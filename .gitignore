@@ -19,6 +19,7 @@ aprs-desktop-app/backend/env
 aprs-desktop-app/backend/__pycache__
 aprs-desktop-app/backend/build
 aprs-desktop-app/backend/aprsServer.spec
+aprs-desktop-app/backend/dist
 
 #ignore .vscode
 aprs-dekstop-app/.vscode
