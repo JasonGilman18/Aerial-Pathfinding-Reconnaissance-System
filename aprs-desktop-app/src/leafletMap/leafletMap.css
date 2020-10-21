@@ -1,10 +1,8 @@
 #mapid
 {
-    position: absolute;
-    top: 25px;
-    left: 25px;
-    height: 400px;
-    width: 400px;
+    margin: 25px 0px 25px 0px;
+    min-height: 400px;
+    width: 100%;
 }
 
 .leaflet-div-icon

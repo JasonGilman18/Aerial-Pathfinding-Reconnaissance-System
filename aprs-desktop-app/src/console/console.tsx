@@ -9,17 +9,26 @@ import Leaflet, { LeafletMouseEvent } from 'leaflet';
 
 
 type ConsoleProps = {display: number, onUpdateStepStatus: any, stepStatus: Array<string>, onNextButtonClick: any};
-type ConsoleStates = {display: number, coordinates: string, mapMarkers: Array<any>};
+type ConsoleStates = {display: number, coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: any, lngInput: any, mapCenter: any, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any};
 class Console extends React.Component<ConsoleProps, ConsoleStates>
 {
-    //private coordinateInput: React.RefObject<HTMLInputElement>;
+    private showMap: React.RefObject<HTMLInputElement>;
+    private latInput: React.RefObject<HTMLInputElement>;
+    private lngInput: React.RefObject<HTMLInputElement>;
 
     constructor(props: any)
     {
         super(props);
-        //this.coordinateInput = React.createRef();
-        this.state = {display: this.props.display, coordinates: "", mapMarkers: []};
-        this.updateMarkers = this.updateMarkers.bind(this);
+
+        this.showMap = React.createRef();
+        this.latInput = React.createRef();
+        this.lngInput = React.createRef();
+
+        this.state = {display: this.props.display, coordinates: "", mapMarkers: [], showMap: false, latInput: "", lngInput: "", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}};
+        this.lockInRectangle = this.lockInRectangle.bind(this);
+        this.getCurrentLocation = this.getCurrentLocation.bind(this);
+        this.setupMap = this.setupMap.bind(this);
+        this.createRectangle = this.createRectangle.bind(this);
     }
 
     componentWillReceiveProps(newProp: any)
@@ -30,21 +39,60 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
         }
     }
 
-    /*
-    pullCoordinates()
+    async getCurrentLocation()
     {
-        var inputVal = this.coordinateInput.current!.value;
-        console.log(inputVal);
-        this.setState({coordinates: inputVal});
+        const apikey = process.env.REACT_APP_GOOGLE_API_KEY;
+        const response = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + apikey, {method: 'POST'}).then(res => res.json());
+        this.setState({latInput: response.location.lat, lngInput: response.location.lng});
     }
-    */
 
-    updateMarkers(e: LeafletMouseEvent)
+    setupMap()
     {
-        var temp = this.state.mapMarkers;
-        temp.push(e.latlng);
-        console.log(e.latlng);
-        this.setState({mapMarkers: temp});
+        var latInput = this.latInput.current!.value;
+        var lngInput = this.lngInput.current!.value;
+        var tempMarkers = this.state.mapMarkers;
+        tempMarkers.push({lat: latInput, lng: lngInput});
+        this.setState({mapMarkers: tempMarkers, showMap: true, mapCenter: [latInput, lngInput]});
+    }
+
+    lockInRectangle(e: LeafletMouseEvent)
+    {
+        this.setState({createRectangle: false});
+        this.createRectangle(e);
+    }
+
+    createRectangle(e :LeafletMouseEvent)
+    {
+        const current_loc = Leaflet.latLng(this.state.mapCenter[0], this.state.mapCenter[1]);
+        const cursor_loc = Leaflet.latLng(e.latlng.lat, e.latlng.lng);
+        var bounds = Leaflet.latLngBounds(current_loc, cursor_loc);
+
+        var sw = bounds.getSouthWest();
+        var nw = bounds.getNorthWest();
+        var se = bounds.getSouthEast();
+        var ne = bounds.getNorthEast();
+
+        var tempLocationTable = {currentLocation: "", currentLat: 0, currentLng: 0, location1: "", lat1: 0, lng1: 0, location2: "", lat2: 0, lng2: 0, location3: "", lat3: 0, lng3: 0};
+        if(current_loc.lat == sw.lat && current_loc.lng == sw.lng)
+            tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW (Current)", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+        else if(current_loc.lat == nw.lat && current_loc.lng == nw.lng)
+            tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW (Current)", lat3: nw.lat, lng3: nw.lng};
+        else if(current_loc.lat == se.lat && current_loc.lng == se.lng)
+            tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE (Current)", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+        else if(current_loc.lat == ne.lat && current_loc.lng == ne.lng)
+            tempLocationTable = {currentLocation: "NE (Current)", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+
+        var width = sw.distanceTo(se);
+        var height = sw.distanceTo(nw);
+        var area = width*height;
+        
+        var color = "";
+        if(area > 1000000)
+            color = "red";
+        else
+            color = "green";
+
+        this.setState({mapRectangles: [[bounds, color]], locationTable: tempLocationTable});
     }
 
     checkPreviousStepCompletion(i: number)
@@ -99,14 +147,14 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                                 This software will serve as the controller for the Aerial Pathfinding Reconnaissance System. You will
                                 be able to input, start, and suspend the various devices contained within the APRS. The APRS requires 
                                 that the aerial and land drones are within distance so that a wifi signal can be recieved by this software.
-                                <br></br>
-                                <br></br>
+                            </p>
+                            <p>    
                                 To ensure proper operation of the system, please follow the instructions listed below.
                             </p>
                             <h3 className="header_step">Instructions</h3>
                             <div className="underline"></div>
                             <p>
-                                This software UI is split into several sections: the main box, steps box, navigation box, and console box.
+                                This UI software is split into several sections: the main box, steps box, navigation box, and console box.
                             </p>
                             <ul>
                                 <li>
@@ -117,30 +165,32 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                                 <li>
                                     The steps box is displayed to the left of the main box. It contains all of the steps for operating the APRS.
                                     On each step, you can see the description and status of the step.
-                                    <table id="statusColorTable">
-                                        <thead>
-                                            <th>Status Color</th>
-                                            <th>Meaning</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td style={{backgroundColor: "blue"}}></td>
-                                                <td>In Progress</td>
-                                            </tr>
-                                            <tr>
-                                                <td style={{backgroundColor: "green"}}></td>
-                                                <td>Complete</td>
-                                            </tr>
-                                            <tr>
-                                                <td style={{backgroundColor: "#444e55"}}></td>
-                                                <td>Incomplete</td>
-                                            </tr>
-                                            <tr>
-                                                <td style={{backgroundColor: "red"}}></td>
-                                                <td>Error</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div id="centerTable">
+                                        <table id="statusColorTable">
+                                            <thead>
+                                                <th>Status Color</th>
+                                                <th>Meaning</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{backgroundColor: "#3865a3"}}></td>
+                                                    <td>In Progress</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{backgroundColor: "#64a338"}}></td>
+                                                    <td>Complete</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{backgroundColor: "#444e55"}}></td>
+                                                    <td>Incomplete</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{backgroundColor: "#e03b24"}}></td>
+                                                    <td>Error</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     Upon clicking on any of the steps, the step will open in the main box.
                                 </li>
                                 <li>
@@ -171,10 +221,66 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                             <div onClick={() => {this.props.onNextButtonClick(1+1);this.props.onUpdateStepStatus(1+1, "inprogress")}} className={this.props.stepStatus[1]=="complete" ? "nextBtn" : "hidden"}><h6>Next Step</h6></div>
                         </Container>
                         <Container fluid className="bottomRow">
-                            <LeafMap markers={this.state.mapMarkers} onMapClick={this.updateMarkers.bind(this)}></LeafMap>
-                            {this.state.mapMarkers.map((position) =>
-                                <p>{"Lat: " + position.lat + " Lng: " + position.lng}</p>
-                            )}
+                            <h3 className="header_step">Select the Mapping Area</h3>
+                            <div className="underline"></div>
+                            <p>
+                                In this step you will select the area to be mapped by the aerial drone. This area will dictate the 
+                                possible paths for the autonomous land vehicle.
+                            </p>
+                            <p>
+                                If you are connected to the internet you may click the button provided to get your current location.
+                                Otherwise, you must enter the coordinates of your current location.
+                                Then, click the add to map button to place the initial pin on the map.
+                                Next, please plot the area to be mapped in the provided plot.
+                                Click on the plot to place pins for the drone's flight.
+                                You can view your plotted pins in the table below the map.
+                            </p>
+                            <p>
+                                Upon completion, make sure your current location is reported and you have placed pins on the map. 
+                            </p>
+                            <div className={this.state.showMap?"hidden":"currentLocationCenter"}>
+                                <div id="currentLocationFirst">
+                                    <div onClick={this.getCurrentLocation} id="currentLocationBtn"><h6>Get My Location</h6></div>
+                                    <h5 id="currentLocationDivider">or</h5>
+                                    <form id="currentLocationForm">
+                                        <input ref={this.latInput} id="latInput" type="text" placeholder="Latitude:" value={this.state.latInput}></input>
+                                        <input ref={this.lngInput} id="lngInput" type="text" placeholder="Longitude:" value={this.state.lngInput}></input>
+                                    </form>
+                                </div>
+                                <div ref={this.showMap} id="manualLocationSubmit" onClick={this.setupMap}><h6>Show Map</h6></div>
+                            </div>
+                            <div className={this.state.showMap?"locationTableCenter":"hidden"}>
+                                <table className="locationTable">
+                                    <thead>
+                                        <th className="firstCol">Boundary Location</th>
+                                        <th className="otherCol">Latitude Value</th>
+                                        <th className="otherCol">Longitude Value</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{this.state.locationTable.currentLocation}</td>
+                                            <td>{this.state.locationTable.currentLat}</td>
+                                            <td>{this.state.locationTable.currentLng}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{this.state.locationTable.location1}</td>
+                                            <td>{this.state.locationTable.lat1}</td>
+                                            <td>{this.state.locationTable.lng1}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{this.state.locationTable.location2}</td>
+                                            <td>{this.state.locationTable.lat2}</td>
+                                            <td>{this.state.locationTable.lng2}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{this.state.locationTable.location3}</td>
+                                            <td>{this.state.locationTable.lat3}</td>
+                                            <td>{this.state.locationTable.lng3}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <LeafMap showMap={this.state.showMap} mapCenter={this.state.mapCenter} createRectangle={this.state.createRectangle} rectangles={this.state.mapRectangles} markers={this.state.mapMarkers} onMapHover={this.createRectangle.bind(this)} onMapClick={this.lockInRectangle.bind(this)}></LeafMap>
                         </Container>
                     </div>
                 </div>

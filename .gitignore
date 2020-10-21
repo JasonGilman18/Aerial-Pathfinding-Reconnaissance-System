@@ -12,17 +12,17 @@ aprs-desktop-app/.env.production.local
 aprs-desktop-app/npm-debug.log*
 aprs-desktop-app/yarn-debug.log*
 aprs-desktop-app/yarn-error.log*
+aprs-desktop-app/static
 
 #ignore aprs-desktop-app/backend files
 aprs-desktop-app/backend/env
 aprs-desktop-app/backend/__pycache__
 aprs-desktop-app/backend/build
-aprs-desktop-app/backend/dist
 aprs-desktop-app/backend/aprsServer.spec
-
-#ignore map images
-aprs-desktop-app/static
 
 #ignore .vscode
 aprs-dekstop-app/.vscode
 .vscode
+
+#ignore api key
+.env
