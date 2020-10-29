@@ -10,9 +10,12 @@ CORS(app)
 api = Api(app)
 
 
-class test(Resource):
+class shutdown(Resource):
     def get(self):
-        return jsonify({0: "the change has been made 2"})
+        func = request.environ.get('werkzeung.server.shutdown')
+        if func is None:
+            raise RuntimeError("Not running with the Werkzeung Server")
+        func()
 
 class map(Resource):
     def get(self, z, x, y):
@@ -25,7 +28,7 @@ class map(Resource):
         dir = os.path.join(app.static_folder, 'mapImages', '4uMaps', z, x, filename)
         return send_file(dir)
 
-api.add_resource(test, '/test')
+api.add_resource(shutdown, '/shutdown')
 api.add_resource(map, '/map/<string:z>/<string:x>/<string:y>')
 
 if __name__=="__main__":

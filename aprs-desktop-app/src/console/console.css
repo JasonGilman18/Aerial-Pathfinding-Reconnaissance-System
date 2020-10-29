@@ -157,6 +157,34 @@
 
 
 /* STEP 2 ===============================================================*/
+.errorBox
+{
+    position: relative;
+    width: 100%;
+    min-height: 100px;
+    margin: 15px 0px 0px 0px;
+    padding: 10px 25px 10px 25px;
+    background-color: #e65e4d;
+    color: #c8cdd0;
+    border: 2px solid #e03b24;
+    border-radius: 5px;
+}
+
+.exitLogo
+{
+    position: absolute;
+    top: 5px;
+    right: 5px; 
+    width: 15px;
+    height: 15px;
+    fill:#c8cdd0;
+}
+
+.exitLogo:hover
+{
+    cursor: pointer;
+}
+
 .currentLocationCenter
 {
     width: 100%;

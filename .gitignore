@@ -27,3 +27,5 @@ aprs-dekstop-app/.vscode
 
 #ignore api key
 .env
+
+aprs-aerial-server/env

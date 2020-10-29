@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import ReactDOM from 'react-dom';
 import {Container, Row} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './console.css';
 import LeafMap from '../leafletMap/leafletMap';
 import Leaflet, { LeafletMouseEvent } from 'leaflet';
+import {ReactComponent as ExitLogo} from './img/times-circle-regular.svg';
 
 
 
 type ConsoleProps = {display: number, onUpdateStepStatus: any, stepStatus: Array<string>, onNextButtonClick: any};
-type ConsoleStates = {display: number, coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: any, lngInput: any, mapCenter: any, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any};
+type ConsoleStates = {stepStatus: Array<string>, display: number, coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: any, lngInput: any, mapCenter: any, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any, mappingArea: any};
 class Console extends React.Component<ConsoleProps, ConsoleStates>
 {
     private showMap: React.RefObject<HTMLInputElement>;
@@ -24,7 +25,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
         this.latInput = React.createRef();
         this.lngInput = React.createRef();
 
-        this.state = {display: this.props.display, coordinates: "", mapMarkers: [], showMap: false, latInput: "", lngInput: "", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}};
+        this.state = {stepStatus: this.props.stepStatus, display: this.props.display, coordinates: "", mapMarkers: [], showMap: false, latInput: "", lngInput: "", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: ""};
         this.lockInRectangle = this.lockInRectangle.bind(this);
         this.getCurrentLocation = this.getCurrentLocation.bind(this);
         this.setupMap = this.setupMap.bind(this);
@@ -35,8 +36,9 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
     {
         if(this.state.display != newProp.display)
         {
-            this.setState({display: newProp.display});
+            this.setState({stepStatus: newProp.stepStatus, display: newProp.display});
         }
+        this.setState({stepStatus: newProp.stepStatus});
     }
 
     async getCurrentLocation()
@@ -57,7 +59,11 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
 
     lockInRectangle(e: LeafletMouseEvent)
     {
-        this.setState({createRectangle: false});
+        const current_loc = Leaflet.latLng(this.state.mapCenter[0], this.state.mapCenter[1]);
+        const cursor_loc = Leaflet.latLng(e.latlng.lat, e.latlng.lng);
+        var bounds = Leaflet.latLngBounds(current_loc, cursor_loc);
+
+        this.setState({createRectangle: false, mappingArea: bounds});
         this.createRectangle(e);
     }
 
@@ -121,6 +127,14 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
             {
                 case 0:
                     return "complete";
+
+                case 1:
+                    if(this.state.mappingArea == "")
+                    {
+                        return "error";
+                    }
+                    else
+                        return "complete";
             }
         }
         else
@@ -221,6 +235,10 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                             <div onClick={() => {this.props.onNextButtonClick(1+1);this.props.onUpdateStepStatus(1+1, "inprogress")}} className={this.props.stepStatus[1]=="complete" ? "nextBtn" : "hidden"}><h6>Next Step</h6></div>
                         </Container>
                         <Container fluid className="bottomRow">
+                            <div className={this.props.stepStatus[1] == "error" ? "errorBox" : "hidden"}>
+                                <h6>Input your current location, select the mapping area, and click to lock in your selection.</h6>
+                                <ExitLogo className="exitLogo" onClick={() => this.props.onUpdateStepStatus(1, "inprogress")}></ExitLogo>
+                            </div>
                             <h3 className="header_step">Select the Mapping Area</h3>
                             <div className="underline"></div>
                             <p>
