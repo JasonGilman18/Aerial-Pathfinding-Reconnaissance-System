@@ -58,4 +58,5 @@
 .status.incomplete{background-color: #444e55;}
 .status.inprogress{background-color:#3865a3;}
 .status.error{background-color: #e03b24;}
+.status.prevError{background-color: #e03b24;}
 .status.complete{background-color: #64a338;}

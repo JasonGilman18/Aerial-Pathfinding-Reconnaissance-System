@@ -1,10 +1,9 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './step.css';
 
-type StepProps = {position: string, number: number, description: string, status: string, onStepClick: any};
+type StepProps = {position: string, number: number, description: string, status: string, func_onStepClick: any};
 type StepStates = {position: string, status: string};
 class Step extends React.Component<StepProps, StepStates>
 {
@@ -25,7 +24,7 @@ class Step extends React.Component<StepProps, StepStates>
     render()
     {
         return(
-            <div onClick={() => {this.props.onStepClick(this.props.number - 1)}} className={"stepBox " + this.state.position}>
+            <div onClick={() => {this.props.func_onStepClick(this.props.number - 1)}} className={"stepBox " + this.state.position}>
                 <div className="stepNameArea">
                     <h5>{"Step " + this.props.number}</h5>
                     <h6>{this.props.description}</h6>

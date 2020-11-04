@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Container} from 'react-bootstrap';
 import './footer.css';
 
 type FooterProps = {};

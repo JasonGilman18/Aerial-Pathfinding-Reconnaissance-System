@@ -1,8 +1,8 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import {animateScroll} from 'react-scroll';
 import {Container} from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Console from './console/console';
 import Header from './header/header';
 import Footer from './footer/footer';
@@ -32,30 +32,35 @@ class Main extends React.Component<MainProps, MainStates>
         this.setState({selectedStep: i});
     }
 
-    updateStepStatus(i: number, status: string)
+    updateStepStatus(i: number, status: string, bypass: boolean = false)
     {
         var tempStepStatus = this.state.stepStatus;
-        var similar = tempStepStatus[i] == status;
-        tempStepStatus[i] = status;
-        this.setState({stepStatus: tempStepStatus});
+        var currentStatus = tempStepStatus[i];
+        
+        if(bypass || (currentStatus != "complete" && currentStatus != "error"))
+        {
+            var similar = tempStepStatus[i] == status;
+            tempStepStatus[i] = status;
+            this.setState({stepStatus: tempStepStatus});
 
-        var message = "";
-        if(status == "error")
-        {
-            message = "Step " + (i+1) + " has errors!";
+            var message = "";
+            if(status == "error" || status == "prevError")
+            {
+                message = "Step " + (i+1) + " has errors!";
+            }
+            else if(status == "inprogress")
+            {
+                if(similar)
+                    message = "Step " + (i+1) + " resumed...";
+                else
+                    message = "Step " + (i+1) + " started...";
+            }
+            else if(status == "complete")
+            {
+                message = "Step " + (i+1) + " completed without errors!";
+            }
+            this.pushMessageToProgress(message);
         }
-        else if(status == "inprogress")
-        {
-            if(similar)
-                message = "Step " + (i+1) + " resumed...";
-            else
-                message = "Step " + (i+1) + " started...";
-        }
-        else if(status == "complete")
-        {
-            message = "Step " + (i+1) + " completed without errors!";
-        }
-        this.pushMessageToProgress(message);
     }
 
     pushMessageToProgress(message: string)
@@ -78,14 +83,14 @@ class Main extends React.Component<MainProps, MainStates>
                             <img src={logoIcon}/>
                         </div>
                         <div id="stepsBox">
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[0]} position="first" number={1} description="Instructions"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[1]} position="middle" number={2} description="Select Mapping Area"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[2]} position="middle" number={3} description="Upload Navigation Instructions to Aerial Drone"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[3]} position="middle" number={4} description="Begin Data Collection Flight"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[4]} position="middle" number={5} description="Download Flight Data From Aerial Drone"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[5]} position="middle" number={6} description="Begin Software Analysis"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[6]} position="middle" number={7} description="Upload Navigation Instructions to Land Drone"/>
-                            <Step onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[7]} position="last" number={8} description="Begin Land Drone Excursion"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[0]} position="first" number={1} description="Instructions"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[1]} position="middle" number={2} description="Select Mapping Area"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[2]} position="middle" number={3} description="Upload Navigation Instructions to Aerial Drone"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[3]} position="middle" number={4} description="Begin Data Collection Flight"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[4]} position="middle" number={5} description="Download Flight Data From Aerial Drone"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[5]} position="middle" number={6} description="Begin Software Analysis"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[6]} position="middle" number={7} description="Upload Navigation Instructions to Land Drone"/>
+                            <Step func_onStepClick={this.updateSelectedStep.bind(this)} status={this.state.stepStatus[7]} position="last" number={8} description="Begin Land Drone Excursion"/>
                         </div>
                         <div id="progressBox">
                             {
@@ -95,7 +100,7 @@ class Main extends React.Component<MainProps, MainStates>
                             }
                         </div>
                     </div>                    
-                    <Console onNextButtonClick={this.updateSelectedStep.bind(this)} stepStatus={this.state.stepStatus} onUpdateStepStatus={this.updateStepStatus.bind(this)} display={this.state.selectedStep}/>
+                    <Console func_onNextButtonClick={this.updateSelectedStep.bind(this)} stepStatus={this.state.stepStatus} func_onUpdateStepStatus={this.updateStepStatus.bind(this)} display={this.state.selectedStep}/>
                 </Container>
                 <Footer/>
             </Container>

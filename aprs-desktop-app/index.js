@@ -2,6 +2,7 @@ const electron = require('electron');
 const child_process = require('child_process');
 const find = require("find-process");
 const ps_tree = require("ps-tree");
+const wifi = require("node-wifi");
 const app = electron.app;
 const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
@@ -9,6 +10,8 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 let subpy;
 let apiUrl = "http://127.0.0.1:5000";
+let aerialSSID;
+let aerialPass;
 //const childPids = [];
 
 
@@ -31,6 +34,8 @@ app.on('ready', function(){
             mainWindow = null;
         });
     }
+
+    wifi.init({iface: null});
     
     /*
     var startUp = function(){
@@ -53,7 +58,6 @@ app.on('window-all-closed', function(){
 });
 
 app.on('quit', function(){
-
 
     //fetch(apiUrl + '/shutdown', {method: 'POST'});
     /*
@@ -113,4 +117,22 @@ ipcMain.on('toolbar', (event, arg) => {
         mainWindow.unmaximize();
         event.sender.send("toolbar", false);
     }
+});
+
+
+ipcMain.on('connect-aerial', (event, arg1, arg2) => {
+
+    const ssid = aerialSSID = arg1;
+    const pass = aerialPass = arg2;
+    wifi.connect({ssid: ssid, password: pass}, error => {
+
+        if(error)
+        {
+            event.sender.send('connect-aerial', false);
+        }
+        else
+        {
+            event.sender.send('connect-aerial', true);
+        }
+    });
 });
