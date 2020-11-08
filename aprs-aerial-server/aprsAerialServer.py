@@ -16,7 +16,7 @@ class uploadInstructions(Resource):
     def post(self):
         coordinate_list = request.form.getlist('item')
 
-        file = open("~/coordinates.txt", "w+")
+        file = open("coordinates.txt", "w+")
         for item in coordinate_list:
             if(type(item) == "int"):
                 file.write(item)
