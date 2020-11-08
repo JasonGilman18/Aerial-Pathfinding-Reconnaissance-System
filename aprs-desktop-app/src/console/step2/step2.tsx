@@ -3,6 +3,7 @@ import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Leaflet, { LeafletMouseEvent } from 'leaflet';
 import LeafMap from './leafletMap/leafletMap';
+import './../console.css';
 import './step2.css';
 
 
@@ -24,14 +25,13 @@ class Step2 extends React.Component<Step2Props, Step2State>
         this.latInput = React.createRef();
         this.lngInput = React.createRef();
 
-        
         this.state = {stepStatus: this.props.stepStatus, data: this.props.data, errorMsg: ["Input your current location, and select a valid mapping area by clicking on the map."]};
 
         this.locationInput = this.locationInput.bind(this);
-        this.lockInRectangle = this.lockInRectangle.bind(this);
         this.getCurrentLocation = this.getCurrentLocation.bind(this);
         this.setupMap = this.setupMap.bind(this);
         this.createRectangle = this.createRectangle.bind(this);
+        this.getMappingInstructions = this.getMappingInstructions.bind(this);
     }
 
     componentWillReceiveProps(newProp: any)
@@ -54,24 +54,31 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
     async getCurrentLocation()
     {
-        const apikey = process.env.REACT_APP_GOOGLE_API_KEY;
-        const response = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + apikey, {method: 'POST'});
-
-        if(response.status == 200)
+        if(this.props.func_checkForErrors(this.state.data) != "prevError")
         {
-            var tempData = this.state.data;
-            response.json().then(data => {
+            const apikey = process.env.REACT_APP_GOOGLE_API_KEY;
+            const response = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + apikey, {method: 'POST'});
 
-                tempData.latInput = data.location.lat;
-                tempData.lngInput = data.location.lng;
-                this.setState({data: tempData});
-            });
+            if(response.status == 200)
+            {
+                var tempData = this.state.data;
+                response.json().then(data => {
+
+                    tempData.latInput = data.location.lat;
+                    tempData.lngInput = data.location.lng;
+                    this.setState({data: tempData});
+                });
+            }
+            else
+            {
+                this.props.func_onUpdateStepStatus(1, this.props.func_checkForErrors(this.state.data));
+                this.setState({errorMsg: ["Unable to find your current location, plese manually enter your coordinates."]});
+            }
         }
         else
         {
             this.props.func_onUpdateStepStatus(1, this.props.func_checkForErrors(this.state.data));
-            this.setState({errorMsg: ["Unable to find your current location, plese manually enter your coordinates."]});
-        }
+        }   
     }
 
     setupMap()
@@ -97,32 +104,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
         }
     }
 
-    lockInRectangle(e: LeafletMouseEvent)
-    {
-        const current_loc = Leaflet.latLng(this.state.data.mapCenter[0], this.state.data.mapCenter[1]);
-        const cursor_loc = Leaflet.latLng(e.latlng.lat, e.latlng.lng);
-        var bounds = Leaflet.latLngBounds(current_loc, cursor_loc);
-
-        var sw = bounds.getSouthWest();
-        var nw = bounds.getNorthWest();
-        var se = bounds.getSouthEast();
-
-        var width = sw.distanceTo(se);
-        var height = sw.distanceTo(nw);
-        var area = width*height;
-
-        if(area <= 1000000)
-        {
-            var tempData = this.state.data;
-            tempData.createRectangle = false;
-            tempData.mappingArea = bounds;
-
-            this.setState({data: tempData});
-            this.createRectangle(e);
-        } 
-    }
-
-    createRectangle(e :LeafletMouseEvent)
+    createRectangle(e :LeafletMouseEvent, final: boolean = false)
     {
         const current_loc = Leaflet.latLng(this.state.data.mapCenter[0], this.state.data.mapCenter[1]);
         const cursor_loc = Leaflet.latLng(e.latlng.lat, e.latlng.lng);
@@ -133,15 +115,34 @@ class Step2 extends React.Component<Step2Props, Step2State>
         var se = bounds.getSouthEast();
         var ne = bounds.getNorthEast();
 
-        var tempLocationTable = {currentLocation: "", currentLat: 0, currentLng: 0, location1: "", lat1: 0, lng1: 0, location2: "", lat2: 0, lng2: 0, location3: "", lat3: 0, lng3: 0};
+        //var tempLocationTable = {currentLocation: "", currentLat: 0, currentLng: 0, location1: "", lat1: 0, lng1: 0, location2: "", lat2: 0, lng2: 0, location3: "", lat3: 0, lng3: 0};
+        var tempLocationTable;
+        var offset_x = 1;
+        var offset_y = 1;
         if(current_loc.lat == sw.lat && current_loc.lng == sw.lng)
+        {
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW (Current)", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+            offset_x = 1;
+            offset_y = 1;
+        }  
         else if(current_loc.lat == nw.lat && current_loc.lng == nw.lng)
+        {
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW (Current)", lat3: nw.lat, lng3: nw.lng};
+            offset_x = 1;
+            offset_y = -1;
+        }
         else if(current_loc.lat == se.lat && current_loc.lng == se.lng)
+        {
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE (Current)", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+            offset_x = -1;
+            offset_y = 1;
+        }
         else if(current_loc.lat == ne.lat && current_loc.lng == ne.lng)
+        {
             tempLocationTable = {currentLocation: "NE (Current)", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
+            offset_x = -1;
+            offset_y = -1;
+        } 
 
         var width = sw.distanceTo(se);
         var height = sw.distanceTo(nw);
@@ -157,7 +158,78 @@ class Step2 extends React.Component<Step2Props, Step2State>
         tempData.mapRectangles = [[bounds, color]];
         tempData.locationTable = tempLocationTable;
 
+        if(final && area <= 1000000)
+        {
+            tempData.mappingArea = this.getMappingInstructions(width, height, offset_x, offset_y);
+            tempData.createRectangle = false;
+        }
+            
         this.setState({data: tempData});
+    }
+
+    getMappingInstructions(width: number, height: number, offset_x: number, offset_y: number)
+    {
+        const altitude = 10;
+        const fov_calc = 0.83909963;
+        const meter_to_latlng = 0.0000089;
+
+        const quadrant_size = altitude*fov_calc;
+        const current_lat = this.state.data.mapCenter[0];
+        const current_lng = this.state.data.mapCenter[1];
+
+        const instructions: Array<any> = [altitude];
+        
+        var temp_lat = current_lat;
+        var temp_lng = current_lng;
+        var temp_width = width;
+        var index = 1;
+        while(temp_width > 0)
+        {
+            var temp_height = height;
+
+            if(index % 2 != 0)
+            {
+                while(temp_height > 0)
+                {
+                    var bottom_left = Leaflet.latLng(temp_lat, temp_lng);
+
+                    var temp_top_right_lat = temp_lat + (offset_y * meter_to_latlng * quadrant_size);
+                    var temp_top_right_lng = temp_lng + (offset_x * meter_to_latlng * quadrant_size) / Math.cos(temp_lat * .018 );
+                    var top_right = Leaflet.latLng(temp_top_right_lat, temp_top_right_lng);
+
+                    var quadrant_center = (Leaflet.latLngBounds(bottom_left, top_right)).getCenter();
+
+                    instructions.push([quadrant_center.lat, quadrant_center.lng]);
+
+                    temp_lat += offset_y * meter_to_latlng * quadrant_size;
+                    temp_height -= quadrant_size;
+                }
+            }
+            else
+            {
+                while(temp_height > 0)
+                {
+                    var top_left = Leaflet.latLng(temp_lat, temp_lng);
+
+                    var temp_bottom_right_lat = temp_lat - (offset_y * meter_to_latlng * quadrant_size);
+                    var temp_bottom_right_lng = temp_lng + (offset_x * meter_to_latlng * quadrant_size) / Math.cos(temp_lat * .018 );
+                    var top_right = Leaflet.latLng(temp_bottom_right_lat, temp_bottom_right_lng);
+
+                    var quadrant_center = (Leaflet.latLngBounds(top_left, top_right)).getCenter();
+
+                    instructions.push([quadrant_center.lat, quadrant_center.lng]);
+
+                    temp_lat -= offset_y * meter_to_latlng * quadrant_size;
+                    temp_height -= quadrant_size;
+                }                
+            }
+
+            temp_lng += (offset_x * meter_to_latlng * quadrant_size) / Math.cos(temp_lat * .018);
+            temp_width -= quadrant_size;
+            index ++;
+        }
+
+        instructions.push([0, 0]);
     }
 
     render()
@@ -165,7 +237,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
         return(
 
             <div id="consoleBox">
-                <div className="consoleStep step2">
+                <div className="consoleStep">
                     <Container fluid className="topRow">
                         <h1 className="stepHeader">Step 2</h1>
                         <div className="completeBtn" onClick={() => this.props.func_onUpdateStepStatus(1, this.props.func_checkForErrors(this.state.data), true)}><h6>Complete</h6></div>
@@ -242,7 +314,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
                                 </tbody>
                             </table>
                         </div>
-                        <LeafMap showMap={this.state.data.showMap} mapCenter={this.state.data.mapCenter} createRectangle={this.state.data.createRectangle} rectangles={this.state.data.mapRectangles} markers={this.state.data.mapMarkers} func_onMapHover={this.createRectangle.bind(this)} func_onMapClick={this.lockInRectangle.bind(this)}></LeafMap>
+                        <LeafMap showMap={this.state.data.showMap} mapCenter={this.state.data.mapCenter} createRectangle={this.state.data.createRectangle} rectangles={this.state.data.mapRectangles} markers={this.state.data.mapMarkers} func_onMapHover={this.createRectangle.bind(this)} func_onMapClick={this.createRectangle.bind(this)}></LeafMap>
                     </Container>
                 </div>
             </div>

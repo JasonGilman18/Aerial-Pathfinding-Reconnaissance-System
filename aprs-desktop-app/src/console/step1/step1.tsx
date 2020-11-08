@@ -1,6 +1,7 @@
 import React from 'react';
 import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './../console.css';
 import './step1.css';
 
 
@@ -24,7 +25,7 @@ class Step1 extends React.Component<Step1Props, Step1State>
         return (
 
             <div id="consoleBox">
-                <div className="consoleStep step1">
+                <div className="consoleStep">
                     <Container fluid className="topRow">
                         <h1 className="stepHeader">Step 1</h1>
                         <div className="completeBtn" onClick={() => this.props.func_onUpdateStepStatus(0, this.props.func_checkForErrors())}><h6>Complete</h6></div>

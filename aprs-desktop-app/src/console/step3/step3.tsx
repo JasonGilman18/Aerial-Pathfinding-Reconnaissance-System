@@ -1,14 +1,14 @@
 import React from 'react';
 import {Container} from 'react-bootstrap';
+import Leaflet, { Bounds, LatLngBounds } from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './../console.css';
 import './step3.css';
 
 
 interface Step3_Data {progressVal: string, progressMessage: string, finishedUpload: boolean};
 
-const {ipcRenderer} = window.require('electron');
-
-type Step3Props = {stepStatus: string, data: Step3_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any};
+type Step3Props = {stepStatus: string, data: Step3_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any, func_connectToDrone: any, mappingArea: any};
 type Step3State = {stepStatus: string, data: Step3_Data, errorMsg: Array<string>};
 class Step3 extends React.Component<Step3Props, Step3State>
 {
@@ -16,7 +16,6 @@ class Step3 extends React.Component<Step3Props, Step3State>
     {
         super(props);
 
-         
         this.state = {stepStatus: this.props.stepStatus, data: this.props.data, errorMsg: ["Initiate the uploading of instructions to the aerial drone."]};
 
         this.upload = this.upload.bind(this);
@@ -29,56 +28,52 @@ class Step3 extends React.Component<Step3Props, Step3State>
 
     async upload()
     {
-        var tempData = this.state.data;
-        tempData.progressVal = "0";
-        tempData.progressMessage = "Establishing Connection to Aerial Drone...";
-        this.setState({data: tempData});
-        var connected = await this.connectToDrone();
-
-        if(connected)
+        if(this.props.func_checkForErrors(this.state.data) != "prevError")
         {
             var tempData = this.state.data;
-            tempData.progressVal = "50";
-            tempData.progressMessage = "Sending Navigation Instructions...";
+            tempData.progressVal = "0";
+            tempData.progressMessage = "Establishing Connection to Aerial Drone...";
             this.setState({data: tempData});
-            var sent = await this.sendInstructions();
+            var connected = await this.props.func_connectToDrone();
 
-            if(sent)
+            if(connected)
             {
                 var tempData = this.state.data;
-                tempData.progressVal = "100";
-                tempData.progressMessage = "Navigation Instructions Uploaded";
-                tempData.finishedUpload = true;
+                tempData.progressVal = "50";
+                tempData.progressMessage = "Sending Navigation Instructions...";
                 this.setState({data: tempData});
+                var sent = await this.sendInstructions();
+
+                if(sent)
+                {
+                    var tempData = this.state.data;
+                    tempData.progressVal = "100";
+                    tempData.progressMessage = "Navigation Instructions Uploaded";
+                    tempData.finishedUpload = true;
+                    this.setState({data: tempData});
+                }
+                else
+                {
+                    this.props.func_onUpdateStepStatus(2, this.props.func_checkForErrors(this.state.data));
+                    this.setState({errorMsg: ["Unable to upload navigation instructions.", "Ensure that the aerial drone system is operational and within connection range."]});
+                }
             }
             else
             {
                 this.props.func_onUpdateStepStatus(2, this.props.func_checkForErrors(this.state.data));
-                this.setState({errorMsg: ["Unable to upload navigation instructions.", "Ensure that the aerial drone system is operational and within connection range."]});
+                this.setState({errorMsg: ["Unable to establish connection to aerial drone.", "Ensure that the aerial drone system is operational and within connection range."]});
             }
         }
         else
         {
             this.props.func_onUpdateStepStatus(2, this.props.func_checkForErrors(this.state.data));
-            this.setState({errorMsg: ["Unable to establish connection to aerial drone.", "Ensure that the aerial drone system is operational and within connection range."]});
         }
-    }
-
-    async connectToDrone()
-    {
-        ipcRenderer.send('connect-aerial', 'jason_raspi', 'jasongilman');
-
-        return new Promise(resolve => {
-            ipcRenderer.on('connect-aerial', (event: any, arg: boolean) => {
-            
-                resolve(arg);
-            });
-        });
     }
 
     async sendInstructions()
     {
-        const response = await fetch('http://10.0.0.1:5000/', {method: 'GET'});
+        const mappingArea = this.props.mappingArea;
+        const response = await fetch('http://10.0.0.1:5000/', {method: 'GET', body: mappingArea});
         return response.status == 200;
     }
 
@@ -87,7 +82,7 @@ class Step3 extends React.Component<Step3Props, Step3State>
         return(
 
             <div id="consoleBox">
-                <div className="consoleStep step2">
+                <div className="consoleStep">
                     <Container fluid className="topRow">
                         <h1 className="stepHeader">Step 3</h1>
                         <div className="completeBtn" onClick={() => this.props.func_onUpdateStepStatus(2, this.props.func_checkForErrors(this.state.data), true)}><h6>Complete</h6></div>
@@ -116,7 +111,7 @@ class Step3 extends React.Component<Step3Props, Step3State>
                                 navigation instructions. 
                         </p>
                         <div className="uploadBtnContainer">
-                            <div onClick={this.upload} className="uploadBtn"><h6>Upload</h6></div>
+                            <div onClick={this.upload} className={this.state.data.finishedUpload ? "hidden" : "uploadBtn"}><h6>Upload</h6></div>
                         </div>
                         <div className="aerialUploadCenter">
                             <progress className="aerialUploadProgress" value={this.state.data.progressVal} max="100">{this.state.data.progressVal}</progress>

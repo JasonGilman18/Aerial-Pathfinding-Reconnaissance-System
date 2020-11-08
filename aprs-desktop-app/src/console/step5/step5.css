@@ -1,13 +1,15 @@
-.uploadBtnContainer
+.aerialDownloadBtnContainer
 {
     height: auto;
     width: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    margin: 25px 0px 0px 0px;
+    margin: 25px 0px 25px 0px;
 }
 
-.uploadBtn
+.aerialDownloadBtn
 {
     height: 30px;
     width: 150px;
@@ -19,24 +21,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0px 0px 25px 0px;
 }
 
-.uploadBtn:hover{background-color: #808e99;}
+.aerialDownloadBtn:hover{background-color: #808e99;}
 
-.uploadBtn h6{margin: 0;color: #21262c;}
+.aerialDownloadBtn h6{margin: 0;color: #21262c;}
 
-.aerialUploadCenter
-{
-    height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 25px 0px 25px 0px;
-}
-
-.aerialUploadProgress
+.aerialDownloadProgress
 {
     height: 30px;
     width: 100%;
@@ -44,14 +36,14 @@
     margin: 0px 0px 15px 0px;
 }
 
-.aerialUploadProgress::-webkit-progress-bar
+.aerialDownloadProgress::-webkit-progress-bar
 {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color:#444e55;
 }
 
-.aerialUploadProgress[value]::-webkit-progress-value
+.aerialDownloadProgress[value]::-webkit-progress-value
 {
     background-color: #38787a;
     border-radius: 5px;

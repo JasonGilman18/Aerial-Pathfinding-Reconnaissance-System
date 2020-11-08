@@ -16,3 +16,10 @@
     height: 40px;
     width: 25px;
 }
+
+.mapLoading
+{
+    margin: 25px 0px 25px 0px;
+    display: flex;
+    justify-content: center;
+}

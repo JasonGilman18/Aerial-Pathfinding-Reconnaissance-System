@@ -40,7 +40,7 @@ class LeafMap extends React.Component<LeafMapProps, LeafMapStates>
             {
                 return (
             
-                    <Map id="mapid" onmousemove={(e: LeafletMouseEvent) => this.props.func_onMapHover(e)} onClick={(e: LeafletMouseEvent) => this.props.func_onMapClick(e)} center={this.state.mapCenter} zoom={14} maxZoom={14}>
+                    <Map id="mapid" onmousemove={(e: LeafletMouseEvent) => this.props.func_onMapHover(e)} onClick={(e: LeafletMouseEvent) => this.props.func_onMapClick(e, true)} center={this.state.mapCenter} zoom={14} maxZoom={14}>
                         <TileLayer url="http://localhost:5000/map/{z}/{x}/{y}"/>
                         {
                             this.props.markers.map((position) =>
@@ -79,7 +79,12 @@ class LeafMap extends React.Component<LeafMapProps, LeafMapStates>
         }
         else
         {
-            return (<h2>loading...</h2>);
+            return (
+                
+                <div className="mapLoading">
+                    <h2>Map Loading...</h2>
+                </div>
+            );
         }
 
     }
