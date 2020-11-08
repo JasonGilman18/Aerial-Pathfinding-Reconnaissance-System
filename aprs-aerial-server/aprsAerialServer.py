@@ -1,8 +1,6 @@
 from flask import Flask, request
-from flask.signals import request_finished
 from flask_restful import Resource, Api
 from flask_cors import CORS
-import os
 
 
 app = Flask(__name__)
@@ -16,7 +14,7 @@ class aprs(Resource):
 
 class uploadInstructions(Resource):
     def post(self):
-        coordinate_list = request.form.getlist()
+        coordinate_list = request.form.getlist('item')
 
         file = open("~/coordinates.txt", "r+")
         for item in coordinate_list:
