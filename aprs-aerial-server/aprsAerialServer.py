@@ -14,25 +14,16 @@ class aprs(Resource):
 
 class uploadInstructions(Resource):
     def post(self):
-<<<<<<< HEAD
         coordinate_list = request.form.getlist('nav')
         print(coordinate_list)
 
         file = open("coordinates.txt", "w+")
-	file.write("hello")
-=======
-        coordinate_list = request.form.get('nav')
-        print(coordinate_list)
-
-        file = open("coordinates.txt", "w+")
         for item in coordinate_list:
-            if(type(item) == "int"):
-                file.write(item)
+            if(type(item) == 'int'):
+                file.write(str(item))
             elif(type(item) == 'list'):
-                file.write(item[0], ",", item[1])
-
+                file.write(str(item[0]), ",", str(item[1]))
         
->>>>>>> b000fcf35a273e7676b687f61b46f69086a7bcd4
         file.close()
 
         return "file recieved"
