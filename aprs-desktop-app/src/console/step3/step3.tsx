@@ -74,7 +74,6 @@ class Step3 extends React.Component<Step3Props, Step3State>
     {
         const mappingArea = this.props.mappingArea;
         const response = await fetch('http://10.0.0.1:5000/uploadInstructions', {method: 'POST', body: mappingArea});
-        return response.status == 200;
     }
 
     render()
