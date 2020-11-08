@@ -29,3 +29,7 @@ aprs-dekstop-app/.vscode
 .env
 
 aprs-aerial-server/env
+aprs-aerial-server/build
+aprs-aerial-server/dist
+aprs-aerial-server/__pycache__
+aprs-aerial-server/aprsAerialServer.spec
