@@ -20,10 +20,10 @@ class uploadInstructions(Resource):
         file = open("coordinates.txt", "w+")
         for item in coordinate_list:
             if(type(item) == 'int'):
-                file.write(str(item))
+                file.write(item)
             elif(type(item) == 'list'):
-                file.write(str(item[0]), ",", str(item[1]))
-        
+                file.write(item[0], ",", item[1])
+
         file.close()
 
         return "file recieved"
