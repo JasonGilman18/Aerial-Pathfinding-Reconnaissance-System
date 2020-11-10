@@ -1,6 +1,5 @@
 import React from 'react';
 import {Container} from 'react-bootstrap';
-import Leaflet, { Bounds, LatLngBounds } from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './../console.css';
 import './step3.css';
@@ -73,7 +72,8 @@ class Step3 extends React.Component<Step3Props, Step3State>
     async sendInstructions()
     {
         const mappingArea = this.props.mappingArea;
-        const response = await fetch('http://10.0.0.1:5000/uploadInstructions', {method: 'POST', body: JSON.stringify({nav: mappingArea})});
+        const response = await fetch('http://10.0.0.1:5000/uploadInstructions', {method: 'POST', body: mappingArea});
+        //const response = await fetch('http://10.0.0.1:5000/', {method: 'GET'});
         return response.status == 200;
     }
 

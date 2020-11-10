@@ -5,6 +5,7 @@ import Leaflet, { LeafletMouseEvent } from 'leaflet';
 import LeafMap from './leafletMap/leafletMap';
 import './../console.css';
 import './step2.css';
+const {ipcRenderer} = window.require('electron');
 
 
 interface Step2_Data{coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: string, lngInput: string, mapCenter: Array<any>, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any, mappingArea: any};
@@ -177,7 +178,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
         const current_lat = this.state.data.mapCenter[0];
         const current_lng = this.state.data.mapCenter[1];
 
-        const instructions: Array<any> = [altitude];
+        //const instructions: Array<any> = [altitude];
+        var instructions: string = altitude + "\n";
         
         var temp_lat = current_lat;
         var temp_lng = current_lng;
@@ -199,7 +201,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(bottom_left, top_right)).getCenter();
 
-                    instructions.push([quadrant_center.lat, quadrant_center.lng]);
+                    //instructions.push([quadrant_center.lat, quadrant_center.lng]);
+                    instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
 
                     temp_lat += offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
@@ -217,7 +220,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(top_left, top_right)).getCenter();
 
-                    instructions.push([quadrant_center.lat, quadrant_center.lng]);
+                    //instructions.push([quadrant_center.lat, quadrant_center.lng]);
+                    instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
 
                     temp_lat -= offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
@@ -229,7 +233,12 @@ class Step2 extends React.Component<Step2Props, Step2State>
             index ++;
         }
 
-        instructions.push([0, 0]);
+        //instructions.push([0, 0]);
+        instructions += 0 + "," + 0;
+
+        ipcRenderer.send('print-inststructions', instructions);
+
+        return instructions;
     }
 
     render()
