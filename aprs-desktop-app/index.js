@@ -3,6 +3,7 @@ const child_process = require('child_process');
 const find = require("find-process");
 const ps_tree = require("ps-tree");
 const wifi = require("node-wifi");
+const fs = require('fs');
 const app = electron.app;
 const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
@@ -134,5 +135,17 @@ ipcMain.on('connect-aerial', (event, arg1, arg2) => {
         {
             event.sender.send('connect-aerial', true);
         }
+    });
+});
+
+
+ipcMain.on('print-inststructions', (event, arg1) => {
+
+    const list_of_instructions = arg1;
+
+    fs.appendFile('coordinates.txt', list_of_instructions, (err) => {
+        
+        if(err)
+            console.log(err);
     });
 });
