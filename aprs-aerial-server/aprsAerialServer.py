@@ -14,10 +14,10 @@ class aprs(Resource):
 
 class uploadInstructions(Resource):
     def post(self):
-        coordinate_list = request.data
+        data_json = request.get_json()
 
         file = open("coordinates.txt", "w+")
-        file.write(coordinate_list)
+        file.write(data_json['nav'])
         file.close()
 
         return "file recieved"

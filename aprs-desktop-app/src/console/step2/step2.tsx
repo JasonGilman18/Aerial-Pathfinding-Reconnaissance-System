@@ -236,7 +236,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
         //instructions.push([0, 0]);
         instructions += 0 + "," + 0;
 
-        ipcRenderer.send('print-inststructions', instructions);
+        //ipcRenderer.send('print-inststructions', instructions);
 
         return instructions;
     }
