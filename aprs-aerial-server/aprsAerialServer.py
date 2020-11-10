@@ -17,7 +17,7 @@ class uploadInstructions(Resource):
         coordinate_list = request.data
 
         file = open("coordinates.txt", "w+")
-        file.write(coordinate_list)
+        file.write(str(coordinate_list))
         file.close()
 
         return "file recieved"
