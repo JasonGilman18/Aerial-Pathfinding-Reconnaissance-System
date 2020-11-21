@@ -210,9 +210,9 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
             case 5:
                 return <Step6 stepStatus={this.state.stepStatus[5]} data={this.state.step6_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step6>;
             case 6:
-                return <Step7 stepStatus={this.state.stepStatus[5]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step7>;
+                return <Step7 stepStatus={this.state.stepStatus[6]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step7>;
             case 7:
-                return <Step8 stepStatus={this.state.stepStatus[3]} data={this.state.step8_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step8>
+                return <Step8 stepStatus={this.state.stepStatus[7]} data={this.state.step8_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step8>
         }
     }
 }

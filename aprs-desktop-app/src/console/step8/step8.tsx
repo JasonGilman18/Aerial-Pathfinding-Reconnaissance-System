@@ -103,11 +103,10 @@ class Step8 extends React.Component<Step8Props, Step8States>
                     <Container fluid className="bottomRow">
                         <div className={this.state.stepStatus == "error" ? "errorBox" : "hidden"}>
                             {
-                                this.state.errorMsg.map(msg => {
+                                this.state.errorMsg.map(msg => (
                                     
-                                    if(msg != "")
-                                        return <h6>{msg}</h6>
-                                })
+                                    <h6>{msg}</h6>
+                                ))
                             }
                         </div>
                         <div className={this.state.stepStatus == "prevError" ? "errorBox" : "hidden"}>
