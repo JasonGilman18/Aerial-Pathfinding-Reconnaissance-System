@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask.helpers import send_file
 from flask_restful import Resource, Api
 from flask_cors import CORS
+import os.path
 
 
 app = Flask(__name__)
@@ -17,7 +18,8 @@ class uploadInstructions(Resource):
     def post(self):
         data_json = request.get_json()
 
-        file = open("static/coordinates.txt", "w+")
+        filename = os.path.join(app.root_path, 'static', 'coordinates.txt')
+        file = open(filename, "w+")
         file.write(data_json['nav'])
         file.close()
 
@@ -32,6 +34,7 @@ class download(Resource):
 
 api.add_resource(aprs, '/')
 api.add_resource(uploadInstructions, '/uploadInstructions')
+api.add_resource(download, '/download')
 
 if __name__=="__main__":
     app.run(host='0.0.0.0', port=5000)

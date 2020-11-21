@@ -71,7 +71,7 @@ class Step5 extends React.Component<Step5Props, Step5States>
 
     async downloadData()
     {
-        const response = await fetch('http://10.0.0.1:5000/', {method: 'GET'});
+        const response = await fetch('http://10.0.0.1:5000/download', {method: 'GET'});
         return response.status == 200;
     }
 
