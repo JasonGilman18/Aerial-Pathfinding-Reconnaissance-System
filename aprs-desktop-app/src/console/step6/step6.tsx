@@ -34,7 +34,7 @@ class Step6 extends React.Component<Step6Props, Step6State>
             tempData.progressMessage = "Setting up processes...";
             this.setState({data: tempData});
 
-            const response = await fetch("localhost:5000/analyze", {method: 'GET'});
+            const response = await fetch("http://localhost:5000/analyze", {method: 'GET'});
             if(response.status == 200)
             {
                 var tempData = this.state.data;

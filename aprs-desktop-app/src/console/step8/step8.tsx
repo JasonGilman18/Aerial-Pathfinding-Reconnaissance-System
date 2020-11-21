@@ -99,7 +99,6 @@ class Step8 extends React.Component<Step8Props, Step8States>
                     <Container fluid className="topRow">
                         <h1 className="stepHeader">Step 8</h1>
                         <div className="completeBtn" onClick={() => this.props.func_onUpdateStepStatus(7, this.props.func_checkForErrors(this.state.data), true)}><h6>Complete</h6></div>
-                        <div onClick={() => {this.props.func_onNextButtonClick(7+1);this.props.func_onUpdateStepStatus(7+1, "inprogress")}} className={this.state.stepStatus=="complete" ? "nextBtn" : "hidden"}><h6>Next Step</h6></div>
                     </Container>
                     <Container fluid className="bottomRow">
                         <div className={this.state.stepStatus == "error" ? "errorBox" : "hidden"}>

@@ -213,14 +213,6 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                 return <Step7 stepStatus={this.state.stepStatus[5]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step7>;
             case 7:
                 return <Step8 stepStatus={this.state.stepStatus[3]} data={this.state.step8_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step8>
-            default:
-                return(
-                    <div id="consoleBox">
-                        <div className="consoleStep step3">
-                            incomplete
-                        </div>
-                    </div>
-                );
         }
     }
 }

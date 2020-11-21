@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask.helpers import send_file
 from flask_restful import Resource, Api
 from flask_cors import CORS
 
@@ -16,11 +17,15 @@ class uploadInstructions(Resource):
     def post(self):
         data_json = request.get_json()
 
-        file = open("coordinates.txt", "w+")
+        file = open("static/coordinates.txt", "w+")
         file.write(data_json['nav'])
         file.close()
 
         return "file recieved"
+
+class download(Resource):
+    def get(self):
+        return send_file('static/data.mp4')
 
 
 
