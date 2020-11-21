@@ -10,12 +10,9 @@ CORS(app)
 api = Api(app)
 
 
-class shutdown(Resource):
+class analyze(Resource):
     def get(self):
-        func = request.environ.get('werkzeung.server.shutdown')
-        if func is None:
-            raise RuntimeError("Not running with the Werkzeung Server")
-        func()
+        return "software analysis finished"
 
 class map(Resource):
     def get(self, z, x, y):
@@ -28,7 +25,7 @@ class map(Resource):
         dir = os.path.join(app.static_folder, 'mapImages', '4uMaps', z, x, filename)
         return send_file(dir)
 
-api.add_resource(shutdown, '/shutdown')
+api.add_resource(analyze, '/analyze')
 api.add_resource(map, '/map/<string:z>/<string:x>/<string:y>')
 
 if __name__=="__main__":

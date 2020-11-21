@@ -1,0 +1,61 @@
+.analyzeBtnContainer
+{
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 25px 0px 0px 0px;
+}
+
+.analyzeBtn
+{
+    height: 30px;
+    width: 150px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.3);
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+    background-color: #65737E;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.analyzeBtn:hover{background-color: #808e99;}
+
+.analyzeBtn h6{margin: 0;color: #21262c;}
+
+.analyzeCenter
+{
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 0px 25px 0px;
+}
+
+.analyzeProgress
+{
+    height: 30px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 0px 0px 15px 0px;
+}
+
+.analyzeProgress::-webkit-progress-bar
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color:#444e55;
+}
+
+.analyzeProgress[value]::-webkit-progress-value
+{
+    background-color: #38787a;
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    transition: width 1s ease-out;
+}

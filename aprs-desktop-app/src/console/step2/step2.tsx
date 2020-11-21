@@ -178,7 +178,6 @@ class Step2 extends React.Component<Step2Props, Step2State>
         const current_lat = this.state.data.mapCenter[0];
         const current_lng = this.state.data.mapCenter[1];
 
-        //const instructions: Array<any> = [altitude];
         var instructions: string = altitude + "\n";
         
         var temp_lat = current_lat;
@@ -201,7 +200,6 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(bottom_left, top_right)).getCenter();
 
-                    //instructions.push([quadrant_center.lat, quadrant_center.lng]);
                     instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
 
                     temp_lat += offset_y * meter_to_latlng * quadrant_size;
@@ -220,7 +218,6 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(top_left, top_right)).getCenter();
 
-                    //instructions.push([quadrant_center.lat, quadrant_center.lng]);
                     instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
 
                     temp_lat -= offset_y * meter_to_latlng * quadrant_size;
@@ -232,11 +229,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
             temp_width -= quadrant_size;
             index ++;
         }
-
-        //instructions.push([0, 0]);
         instructions += 0 + "," + 0;
-
-        //ipcRenderer.send('print-inststructions', instructions);
 
         return instructions;
     }

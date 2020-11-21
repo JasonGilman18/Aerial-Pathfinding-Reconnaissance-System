@@ -2,27 +2,37 @@ import React from 'react';
 import Step1 from './step1/step1';
 import Step2, {Step2_Data} from './step2/step2';
 import Step3, {Step3_Data} from './step3/step3';
-import Step4, {Step4_Data, Time} from './step4/step4';
+import Step4, {Step4_Data} from './step4/step4';
 import Step5, {Step5_Data} from './step5/step5';
+import Step6, {Step6_Data} from './step6/step6';
+import Step7, {Step7_Data} from './step7/step7';
+import Step8, {Step8_Data} from './step8/step8';
 const {ipcRenderer} = window.require('electron');
 
 
+interface Time {hours: number, minutes: number, seconds: number}
+
 type ConsoleProps = {display: number, stepStatus: Array<string>, func_onUpdateStepStatus: any, func_onNextButtonClick: any};
-type ConsoleStates = {display: number, stepStatus: Array<string>, step2_data: Step2_Data, step3_data: Step3_Data, step4_data: Step4_Data, step5_data: Step5_Data};
+type ConsoleStates = {display: number, stepStatus: Array<string>, step2_data: Step2_Data, step3_data: Step3_Data, step4_data: Step4_Data, step5_data: Step5_Data, step6_data: Step6_Data, step7_data: Step7_Data, step8_data: Step8_Data};
 class Console extends React.Component<ConsoleProps, ConsoleStates>
 {
-    private timeInterval: any;
+    private timeInterval_step4: any;
+    private timeInterval_step8: any;
 
     constructor(props: any)
     {
         super(props);
 
-        this.timeInterval = 0;
+        this.timeInterval_step4 = 0;
+        this.timeInterval_step8 = 0;
         var tempStep2Data: Step2_Data = {coordinates: "", mapMarkers: [], showMap: false, latInput: "", lngInput: "", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: ""};
         var tempStep3Data: Step3_Data = {progressVal: "0", progressMessage: "", finishedUpload: false};
         var tempStep4Data: Step4_Data = {flightStarted: false, flightEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
         var tempStep5Data: Step5_Data = {dataDownloaded: false, progressVal: "", progressMessage: ""};
-        this.state = {stepStatus: this.props.stepStatus, display: this.props.display, step2_data: tempStep2Data, step3_data: tempStep3Data, step4_data: tempStep4Data, step5_data: tempStep5Data};
+        var tempStep6Data: Step6_Data = {progressVal: "", progressMessage: "", finishedAnalysis: false};
+        var tempStep7Data: Step7_Data = {progressVal: "", progressMessage: "", finishedUpload: false};
+        var tempStep8Data: Step8_Data = {droneStarted: false, timerEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
+        this.state = {stepStatus: this.props.stepStatus, display: this.props.display, step2_data: tempStep2Data, step3_data: tempStep3Data, step4_data: tempStep4Data, step5_data: tempStep5Data, step6_data: tempStep6Data, step7_data: tempStep7Data, step8_data: tempStep8Data};
         
         this.startTimer = this.startTimer.bind(this);
         this.timer = this.timer.bind(this);
@@ -85,6 +95,21 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                         return "complete";
                     else
                         return "error";
+                case 5:
+                    if(data.finishedAnalysis)
+                        return "complete";
+                    else
+                        return "error";
+                case 6:
+                    if(data.finishedUpload)
+                        return "complete";
+                    else
+                        return "error";
+                case 7:
+                    if(data.timerEnded)
+                        return "complete";
+                    else
+                        return "error";
             }
         }
         else
@@ -104,25 +129,54 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
         });
     }
 
-    startTimer()
+    startTimer(step4: boolean = true)
     {
-        this.timeInterval = setInterval(this.timer, 1000);
+        if(step4)
+        {
+            this.timeInterval_step4 = setInterval(() => this.timer(true), 1000);
+        }
+        else
+        {
+            this.timeInterval_step8 = setInterval(() => this.timer(false), 1000);
+        }
+        
     }
 
-    timer()
+    timer(step4: boolean = true)
     {
-        var tempStep4Data = this.state.step4_data;
-        tempStep4Data.seconds += 1;
-        tempStep4Data.time = this.createDisplayTime(tempStep4Data.seconds);
-        this.setState({step4_data: tempStep4Data});
+        if(step4)
+        {
+            var tempStep4Data = this.state.step4_data;
+            tempStep4Data.seconds += 1;
+            tempStep4Data.time = this.createDisplayTime(tempStep4Data.seconds);
+            this.setState({step4_data: tempStep4Data});
+        }
+        else
+        {
+            var tempStep8Data = this.state.step8_data;
+            tempStep8Data.seconds += 1;
+            tempStep8Data.time = this.createDisplayTime(tempStep8Data.seconds);
+            this.setState({step8_data: tempStep8Data});
+        }
+        
     }
 
-    stopTimer()
+    stopTimer(step4: boolean = true)
     {
-        clearInterval(this.timeInterval);
-        var tempStep4Data = this.state.step4_data;
-        tempStep4Data.finalTime = {hours: tempStep4Data.time.hours, minutes: tempStep4Data.time.minutes, seconds: tempStep4Data.time.seconds};
-        this.setState({step4_data: tempStep4Data});
+        if(step4)
+        {
+            clearInterval(this.timeInterval_step4);
+            var tempStep4Data = this.state.step4_data;
+            tempStep4Data.finalTime = {hours: tempStep4Data.time.hours, minutes: tempStep4Data.time.minutes, seconds: tempStep4Data.time.seconds};
+            this.setState({step4_data: tempStep4Data});
+        }
+        else
+        {
+            clearInterval(this.timeInterval_step8);
+            var tempStep8Data = this.state.step8_data;
+            tempStep8Data.finalTime = {hours: tempStep8Data.time.hours, minutes: tempStep8Data.time.minutes, seconds: tempStep8Data.time.seconds};
+            this.setState({step8_data: tempStep8Data});
+        }
     }
 
     createDisplayTime(s: number)
@@ -153,6 +207,12 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
                 return <Step4 stepStatus={this.state.stepStatus[3]} data={this.state.step4_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step4>;
             case 4:
                 return <Step5 stepStatus={this.state.stepStatus[4]} data={this.state.step5_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step5>;   
+            case 5:
+                return <Step6 stepStatus={this.state.stepStatus[5]} data={this.state.step6_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step6>;
+            case 6:
+                return <Step7 stepStatus={this.state.stepStatus[5]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step7>;
+            case 7:
+                return <Step8 stepStatus={this.state.stepStatus[3]} data={this.state.step8_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step8>
             default:
                 return(
                     <div id="consoleBox">
@@ -166,3 +226,4 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
 }
 
 export default Console;
+export type {Time};

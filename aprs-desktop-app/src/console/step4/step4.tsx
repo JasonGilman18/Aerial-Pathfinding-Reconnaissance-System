@@ -1,11 +1,11 @@
 import React from 'react';
 import {Container} from 'react-bootstrap';
+import {Time} from './../console';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './../console.css';
 import './step4.css';
 
 
-interface Time {hours: number, minutes: number, seconds: number}
 interface Step4_Data {flightStarted: boolean, flightEnded: boolean, time: Time, finalTime: Time, seconds: number, progressVal: string, progressMessage: string};
 
 type Step4Props = {stepStatus: string, data: Step4_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any, func_connectToDrone: any, func_startTimer: any, func_stopTimer: any};

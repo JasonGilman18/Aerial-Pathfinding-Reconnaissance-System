@@ -13,6 +13,7 @@ aprs-desktop-app/npm-debug.log*
 aprs-desktop-app/yarn-debug.log*
 aprs-desktop-app/yarn-error.log*
 aprs-desktop-app/static
+aprs-desktop-app/coordinates.txt
 
 #ignore aprs-desktop-app/backend files
 aprs-desktop-app/backend/env
