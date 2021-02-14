@@ -44,7 +44,7 @@ class download(Resource):
     def get(self):
 
         #open video file, encode, and close
-	filename = os.path.join(app.root_path, 'static', 'data.mp4')
+        filename = os.path.join(app.root_path, 'static', 'data.mp4')
         video_file = open(filename, "rb")
         encoded_video = base64.b64encode(video_file.read())
         video_file.close()
