@@ -140,11 +140,9 @@ ipcMain.on('connect-aerial', (event, arg1, arg2) => {
 
 ipcMain.on('save-video-data', (event, arg1) => {
 
-    const videoToSave = arg1;
-    console.log(videoToSave);
-
-    /*
-    fs.writeFile('videoFromServer.mp4', videoToSave, (err) => {
+    const encodedVideo = arg1;
+    
+    fs.writeFile('./static/encodedVideos/videoFromServer.txt', encodedVideo, (err) => {
 
         if(err)
         {
@@ -154,18 +152,5 @@ ipcMain.on('save-video-data', (event, arg1) => {
         {
             event.sender.send('save-video-data', true);
         }
-    });
-    */
-});
-
-
-ipcMain.on('print-inststructions', (event, arg1) => {
-
-    const list_of_instructions = arg1;
-
-    fs.appendFile('coordinates.txt', list_of_instructions, (err) => {
-        
-        if(err)
-            console.log(err);
     });
 });

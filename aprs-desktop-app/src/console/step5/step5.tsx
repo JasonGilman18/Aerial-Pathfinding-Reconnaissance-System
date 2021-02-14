@@ -73,10 +73,9 @@ class Step5 extends React.Component<Step5Props, Step5States>
     async downloadData()
     {
         const response = await fetch('http://10.0.0.1:5000/download', {method: 'GET'});
-        //const file = await response.blob();
-        //console.log(file);
-
-        ipcRenderer.send('save-video-data', response);
+        const data =  await response.json();
+        
+        ipcRenderer.send('save-video-data', data.encoded_video);
 
         return new Promise(resolve => {
             
