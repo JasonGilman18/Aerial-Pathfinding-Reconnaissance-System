@@ -7,6 +7,9 @@ from flask_cors import CORS
 # import os.path for defining application absolute path
 import os.path
 
+# import base64 for video encoding
+import base64
+
 
 # create flask application and setup CORS, flask_restful
 app = Flask(__name__)
@@ -39,7 +42,13 @@ class uploadInstructions(Resource):
 # define route for sending video data collected from flight 
 class download(Resource):
     def get(self):
-        return send_file('static/data.mp4')
+
+        #open video file, encode, and close
+        video_file = open("static/data.mp4", "rb")
+        encoded_video = base64.b64encode(video_file.read())
+        video_file.close()
+
+        return encoded_video
 
 
 # create url routes for above methods

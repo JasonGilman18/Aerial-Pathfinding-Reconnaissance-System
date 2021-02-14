@@ -3,6 +3,7 @@ import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../console.css';
 import './step5.css';
+const {ipcRenderer} = window.require('electron');
 
 
 interface Step5_Data {dataDownloaded: boolean, progressVal: string, progressMessage: string};
@@ -72,7 +73,18 @@ class Step5 extends React.Component<Step5Props, Step5States>
     async downloadData()
     {
         const response = await fetch('http://10.0.0.1:5000/download', {method: 'GET'});
-        return response.status == 200;
+        //const file = await response.blob();
+        //console.log(file);
+
+        ipcRenderer.send('save-video-data', response);
+
+        return new Promise(resolve => {
+            
+            ipcRenderer.on('save-video-data', (event: any, arg: boolean) => {
+            
+                resolve(arg);
+            });
+        });
     }
 
     render()

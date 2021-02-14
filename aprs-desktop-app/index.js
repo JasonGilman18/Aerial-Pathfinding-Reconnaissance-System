@@ -138,6 +138,26 @@ ipcMain.on('connect-aerial', (event, arg1, arg2) => {
     });
 });
 
+ipcMain.on('save-video-data', (event, arg1) => {
+
+    const videoToSave = arg1;
+    console.log(videoToSave);
+
+    /*
+    fs.writeFile('videoFromServer.mp4', videoToSave, (err) => {
+
+        if(err)
+        {
+            event.sender.send('save-video-data', false);
+        }
+        else
+        {
+            event.sender.send('save-video-data', true);
+        }
+    });
+    */
+});
+
 
 ipcMain.on('print-inststructions', (event, arg1) => {
 
