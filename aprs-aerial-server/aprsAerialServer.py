@@ -1,5 +1,5 @@
 # import neccisary FLASK dependancies
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask.helpers import send_file
 from flask_restful import Resource, Api
 from flask_cors import CORS
@@ -49,7 +49,7 @@ class download(Resource):
         encoded_video = base64.b64encode(video_file.read())
         video_file.close()
 
-        return encoded_video
+        return jsonify({'encoded_video': str(encoded_video)})
 
 
 # create url routes for above methods
