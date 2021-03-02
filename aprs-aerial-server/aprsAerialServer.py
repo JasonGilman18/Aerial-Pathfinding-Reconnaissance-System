@@ -10,6 +10,9 @@ import os.path
 # import base64 for video encoding
 import base64
 
+#import drone startup script
+import dronekit_test_01
+
 
 # create flask application and setup CORS, flask_restful
 app = Flask(__name__)
@@ -52,10 +55,20 @@ class download(Resource):
         return jsonify({'encoded_video': str(encoded_video)})
 
 
+class launch(Resource):
+    def get(self):
+
+        #run the py launch script
+        dronekit_test_01.launchDrone()
+
+        return "drone launched"
+
+
 # create url routes for above methods
 api.add_resource(aprs, '/')
 api.add_resource(uploadInstructions, '/uploadInstructions')
 api.add_resource(download, '/download')
+api.add_resource(launch, '/launch')
 
 
 # define main process
