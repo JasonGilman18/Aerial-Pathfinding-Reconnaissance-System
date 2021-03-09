@@ -78,7 +78,7 @@ class Step8 extends React.Component<Step8Props, Step8States>
 
     async sendLaunch()
     {
-        const response = await fetch('http://10.0.0.1:5000/', {method: 'GET'});
+        const response = await fetch('http://192.168.50.1:5000/', {method: 'GET'});
         return response.status == 200;
     }
 
