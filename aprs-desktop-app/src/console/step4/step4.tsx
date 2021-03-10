@@ -96,7 +96,8 @@ class Step4 extends React.Component<Step4Props, Step4States>
 
     async sendLaunch()
     {
-        const response = await fetch('http://192.168.50.1:5000/launch', {method: 'GET'});
+        //const response = await fetch('http://192.168.50.1:5000/launch', {method: 'GET'});
+        const response = await fetch('http://192.168.50.1:5000/', {method: 'GET'});
         return response.status == 200;
     }
 

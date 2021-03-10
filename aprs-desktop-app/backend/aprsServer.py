@@ -1,12 +1,11 @@
 #import server specific depend.
-from flask import Flask, jsonify, session
+from flask import Flask, jsonify
 from flask.helpers import send_file
-from flask_restful import Resource, Api, request
+from flask_restful import Resource, Api
 from flask_cors import CORS
+from PIL import Image
 import os
-import time
 import base64
-import sys
 import dill
 
 #import cmp vision depend.
@@ -135,7 +134,13 @@ class cvpath(Resource):
         saveNavImgFilename = os.path.join(app.static_folder, 'cv_data', 'navMap.png')
         plt.savefig(saveNavImgFilename)
 
-        return send_file(saveNavImgFilename)
+        imgFile = open(saveNavImgFilename, 'rb')
+        img = base64.b64encode(imgFile.read())
+        img = str(img)[2:-1]
+        imgFile.close()
+
+        #return send_file(saveNavImgFilename)
+        return jsonify({'img': img, 'nav': navInstructions})
 
 
 class mapAssets(Resource):

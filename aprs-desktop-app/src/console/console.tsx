@@ -29,7 +29,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
         var tempStep3Data: Step3_Data = {progressVal: "0", progressMessage: "", finishedUpload: false};
         var tempStep4Data: Step4_Data = {flightStarted: false, flightEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
         var tempStep5Data: Step5_Data = {dataDownloaded: false, progressVal: "", progressMessage: ""};
-        var tempStep6Data: Step6_Data = {downscale: 1, min_disp: 1, sigma: 0.0, progressVal: "", progressMessage: "", showGeneratePath: false, depthMap: null, pathMap: null, finishedAnalysis: false};
+        var tempStep6Data: Step6_Data = {downscale: 1, min_disp: 1, sigma: 0.0, progressVal: "", progressMessage: "", showGeneratePath: false, depthMap: null, pathMap: null, navInstructions: [], finishedAnalysis: false};
         var tempStep7Data: Step7_Data = {progressVal: "", progressMessage: "", finishedUpload: false};
         var tempStep8Data: Step8_Data = {droneStarted: false, timerEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
         this.state = {stepStatus: this.props.stepStatus, display: this.props.display, step2_data: tempStep2Data, step3_data: tempStep3Data, step4_data: tempStep4Data, step5_data: tempStep5Data, step6_data: tempStep6Data, step7_data: tempStep7Data, step8_data: tempStep8Data};

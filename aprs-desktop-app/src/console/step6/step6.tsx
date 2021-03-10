@@ -5,7 +5,7 @@ import './../console.css';
 import './step6.css';
 
 
-interface Step6_Data {downscale: number, min_disp: number, sigma: number, progressVal: string, progressMessage: string, showGeneratePath: boolean, depthMap: any, pathMap: any, finishedAnalysis: boolean};
+interface Step6_Data {downscale: number, min_disp: number, sigma: number, progressVal: string, progressMessage: string, showGeneratePath: boolean, depthMap: any, pathMap: any, navInstructions: any,finishedAnalysis: boolean};
 
 type Step6Props = {stepStatus: string, data: Step6_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any, func_connectToDrone: any};
 type Step6State = {stepStatus: string, data: Step6_Data, errorMsg: Array<string>};
@@ -143,9 +143,9 @@ class Step6 extends React.Component<Step6Props, Step6State>
             tempData2.progressMessage = "Path generated.";
             tempData2.finishedAnalysis = true;
             
-            var imgBlob = await response.blob();
-            var imgUrl = URL.createObjectURL(imgBlob);
-            tempData2.pathMap = imgUrl;
+            var responseObject = await response.json();
+            tempData2.pathMap = responseObject.img;
+            tempData2.navInstructions = responseObject.nav;
             
             this.setState({data: tempData2});
         }
@@ -237,7 +237,7 @@ class Step6 extends React.Component<Step6Props, Step6State>
                             <img src={this.state.data.depthMap} className="depthImg"></img>
                         </div>
                         <div className={this.state.data.finishedAnalysis ? "analyzeImgArea" : "hidden"}>
-                            <img src={this.state.data.pathMap} className="depthImg"></img>
+                            <img src={'data:image/png;base64,'+ this.state.data.pathMap} className="depthImg"></img>
                         </div>
                         <div className="analyzeBtnContainer">
                             <div onClick={this.analyze} className={this.state.data.finishedAnalysis ? "hidden" : (this.state.data.showGeneratePath ? "hidden" : "analyzeBtn")}><h6>Initiate Analysis</h6></div>
