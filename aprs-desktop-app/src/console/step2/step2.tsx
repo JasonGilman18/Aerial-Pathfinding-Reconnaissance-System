@@ -171,6 +171,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
     getMappingInstructions(width: number, height: number, offset_x: number, offset_y: number)
     {
         const altitude = 10;
+        const angleDrone = 270;
         const fov_calc = 0.83909963;
         const meter_to_latlng = 0.0000089;
 
@@ -178,7 +179,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
         const current_lat = this.state.data.mapCenter[0];
         const current_lng = this.state.data.mapCenter[1];
 
-        var instructions: string = altitude + "\n";
+        var instructions: string = altitude + "," + angleDrone + "\n";
         
         var temp_lat = current_lat;
         var temp_lng = current_lng;
