@@ -25,7 +25,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
 
         this.timeInterval_step4 = 0;
         this.timeInterval_step8 = 0;
-        var tempStep2Data: Step2_Data = {coordinates: "", mapMarkers: [], showMap: false, latInput: "29.7046667098447", lngInput: "-95.418425491795", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: ""};
+        var tempStep2Data: Step2_Data = {coordinates: "", mapMarkers: [], showMap: false, latInput: "30.644699", lngInput: "-96.298826", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: ""};
         var tempStep3Data: Step3_Data = {progressVal: "0", progressMessage: "", finishedUpload: false};
         var tempStep4Data: Step4_Data = {flightStarted: false, flightEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
         var tempStep5Data: Step5_Data = {dataDownloaded: false, progressVal: "", progressMessage: ""};

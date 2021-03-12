@@ -170,7 +170,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
     getMappingInstructions(width: number, height: number, offset_x: number, offset_y: number)
     {
-        const altitude = 10;
+        const altitude = 20; //also correlates to quadrant size
         const angleDrone = 270;
         const fov_calc = 0.83909963;
         const meter_to_latlng = 0.0000089;
@@ -179,12 +179,14 @@ class Step2 extends React.Component<Step2Props, Step2State>
         const current_lat = this.state.data.mapCenter[0];
         const current_lng = this.state.data.mapCenter[1];
 
-        var instructions: string = altitude + "," + angleDrone + "\n";
+        var instructions: string = "";
         
         var temp_lat = current_lat;
         var temp_lng = current_lng;
         var temp_width = width;
         var index = 1;
+        var finalRows = 0;
+        var finalCols = 0;
         while(temp_width > 0)
         {
             var temp_height = height;
@@ -202,9 +204,12 @@ class Step2 extends React.Component<Step2Props, Step2State>
                     var quadrant_center = (Leaflet.latLngBounds(bottom_left, top_right)).getCenter();
 
                     instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
-
+                    
                     temp_lat += offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
+
+                    if(index==1)
+                        finalRows ++;
                 }
             }
             else
@@ -220,19 +225,27 @@ class Step2 extends React.Component<Step2Props, Step2State>
                     var quadrant_center = (Leaflet.latLngBounds(top_left, top_right)).getCenter();
 
                     instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
-
+                    
                     temp_lat -= offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
-                }                
+                }
             }
 
             temp_lng += (offset_x * meter_to_latlng * quadrant_size) / Math.cos(temp_lat * .018);
             temp_width -= quadrant_size;
             index ++;
+            finalCols ++;
         }
+
         instructions += 0 + "," + 0;
 
-        return instructions;
+        //var finalRows = index;
+        //var finalCols = Math.ceil(totalCoordinates / finalRows);
+        var preReq: string = altitude + "," + angleDrone + "," + finalRows + "," + finalCols + "\n";
+        var finalInstructions = preReq + instructions;
+        
+
+        return finalInstructions;
     }
 
     render()
