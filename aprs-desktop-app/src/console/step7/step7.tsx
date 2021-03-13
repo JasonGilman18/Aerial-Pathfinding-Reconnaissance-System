@@ -7,7 +7,7 @@ import './step7.css';
 
 interface Step7_Data {progressVal: string, progressMessage: string, finishedUpload: boolean};
 
-type Step7Props = {stepStatus: string, data: Step7_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any, func_connectToDrone: any};
+type Step7Props = {stepStatus: string, data: Step7_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any, func_connectToDrone: any, navInstructions: any};
 type Step7State = {stepStatus: string, data: Step7_Data, errorMsg: Array<string>};
 class Step7 extends React.Component<Step7Props, Step7State>
 {
@@ -67,7 +67,7 @@ class Step7 extends React.Component<Step7Props, Step7State>
     async sendInstructions()
     {
         //const response = await fetch('http://10.0.0.1:5000/uploadInstructions', {method: 'POST', body: JSON.stringify({nav: mappingArea}), headers: {'Content-Type': 'application/json; charset=UTF-8'}});
-        const response = await fetch('http://192.168.50.1:5000/', {method: 'GET'});
+        const response = await fetch('http://192.168.50.1:5000/', {method: 'POST', body: JSON.stringify({nav: this.props.navInstructions}), headers: {'Content-Type': 'application/json; charset=UTF-8'}});
         return response.status == 200;
     }
 
