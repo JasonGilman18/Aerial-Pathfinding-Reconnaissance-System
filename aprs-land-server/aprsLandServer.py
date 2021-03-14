@@ -1,14 +1,14 @@
 # import neccisary FLASK dependancies
-from flask import Flask, request, jsonify
-from flask.helpers import send_file
+from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
+import dill
 
 # import os.path for defining application absolute path
 import os.path
 
-# import base64 for video encoding
-import base64
+#import moveRover
+import moveRover
 
 
 # create flask application and setup CORS, flask_restful
@@ -31,10 +31,15 @@ class uploadInstructions(Resource):
         data_json = request.get_json()
 
         # create filename/abs path and open, write to the file.
-        filename = os.path.join(app.root_path, 'static', 'coordinates.txt')
-        file = open(filename, "w+")
-        file.write(data_json['nav'])
+        filename = os.path.join(app.root_path, 'static', 'coordinates.pickle')
+        file = open(filename, "wb")
+        dill.dump(data_json['nav'], file)
         file.close()
+
+        filename2 = os.path.join(app.root_path, 'static', 'direction.pickle')
+        file2 = open(filename2, "wb")
+        dill.dump(data_json["direction"], file2)
+        file2.close()
 
         return "file recieved"
 
@@ -42,8 +47,19 @@ class uploadInstructions(Resource):
 class launch(Resource):
     def get(self):
 
-        #run the py launch script
-        #dronekit_test_01.launchDrone()
+        filename = os.path.join(app.root_path, 'static', 'coordinates.pickle')
+        file = open(filename, "rb")
+        navInstructions = dill.load(file)
+        file.close()
+
+        filename2 = os.path.join(app.root_path, 'static', 'direction.pickle')
+        file2 = open(filename2, "rb")
+        direction = dill.load(file2)
+        file2.close()
+
+        direction = direction[:1]
+
+        moveRover.move_rover(navInstructions, direction)
 
         return "drone launched"
 
