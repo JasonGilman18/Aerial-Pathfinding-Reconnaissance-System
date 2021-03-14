@@ -8,7 +8,7 @@ import './step2.css';
 const {ipcRenderer} = window.require('electron');
 
 
-interface Step2_Data{coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: string, lngInput: string, mapCenter: Array<any>, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any, mappingArea: any};
+interface Step2_Data{coordinates: string, mapMarkers: Array<any>, showMap: boolean, latInput: string, lngInput: string, mapCenter: Array<any>, mapRectangles: Array<any>, createRectangle: boolean, locationTable: any, mappingArea: any, directionFacing: string};
 
 type Step2Props = {stepStatus: string, data: Step2_Data, func_onUpdateStepStatus: any, func_onNextButtonClick: any, func_checkForErrors: any};
 type Step2State = {stepStatus: string, data: Step2_Data, errorMsg: Array<string>};
@@ -118,6 +118,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
         //var tempLocationTable = {currentLocation: "", currentLat: 0, currentLng: 0, location1: "", lat1: 0, lng1: 0, location2: "", lat2: 0, lng2: 0, location3: "", lat3: 0, lng3: 0};
         var tempLocationTable;
+        var directionFacing = "";
         var offset_x = 1;
         var offset_y = 1;
         if(current_loc.lat == sw.lat && current_loc.lng == sw.lng)
@@ -125,24 +126,28 @@ class Step2 extends React.Component<Step2Props, Step2State>
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW (Current)", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
             offset_x = 1;
             offset_y = 1;
+            directionFacing = "SW";
         }  
         else if(current_loc.lat == nw.lat && current_loc.lng == nw.lng)
         {
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW (Current)", lat3: nw.lat, lng3: nw.lng};
             offset_x = 1;
             offset_y = -1;
+            directionFacing = "NW";
         }
         else if(current_loc.lat == se.lat && current_loc.lng == se.lng)
         {
             tempLocationTable = {currentLocation: "NE", currentLat: ne.lat, currentLng: ne.lng, location1: "SE (Current)", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
             offset_x = -1;
             offset_y = 1;
+            directionFacing = "SE";
         }
         else if(current_loc.lat == ne.lat && current_loc.lng == ne.lng)
         {
             tempLocationTable = {currentLocation: "NE (Current)", currentLat: ne.lat, currentLng: ne.lng, location1: "SE", lat1: se.lat, lng1: se.lng, location2: "SW", lat2: sw.lat, lng2: sw.lng, location3: "NW", lat3: nw.lat, lng3: nw.lng};
             offset_x = -1;
             offset_y = -1;
+            directionFacing = "NE";
         } 
 
         var width = sw.distanceTo(se);
@@ -163,6 +168,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
         {
             tempData.mappingArea = this.getMappingInstructions(width, height, offset_x, offset_y);
             tempData.createRectangle = false;
+            tempData.directionFacing = directionFacing;
         }
             
         this.setState({data: tempData});

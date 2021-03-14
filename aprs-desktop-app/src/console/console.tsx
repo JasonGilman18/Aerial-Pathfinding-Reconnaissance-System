@@ -25,7 +25,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
 
         this.timeInterval_step4 = 0;
         this.timeInterval_step8 = 0;
-        var tempStep2Data: Step2_Data = {coordinates: "", mapMarkers: [], showMap: false, latInput: "30.644699", lngInput: "-96.298826", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: ""};
+        var tempStep2Data: Step2_Data = {coordinates: "", mapMarkers: [], showMap: false, latInput: "30.644699", lngInput: "-96.298826", mapCenter: [], mapRectangles: [], createRectangle: true, locationTable: {}, mappingArea: "", directionFacing: ""};
         var tempStep3Data: Step3_Data = {progressVal: "0", progressMessage: "", finishedUpload: false};
         var tempStep4Data: Step4_Data = {flightStarted: false, flightEnded: false, time: {hours: 0, minutes: 0, seconds: 0}, finalTime: {hours: 0, minutes: 0, seconds: 0}, seconds: 0, progressVal: "0", progressMessage: ""};
         var tempStep5Data: Step5_Data = {dataDownloaded: false, progressVal: "", progressMessage: ""};
@@ -116,17 +116,32 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
             return "prevError";
     }
 
-    async connectToDrone()
+    async connectToDrone(landRover = false)
     {
-        ipcRenderer.send('connect-aerial', process.env.REACT_APP_AERIAL_SSID, process.env.REACT_APP_AERIAL_PASS);
+        if(!landRover)
+        {
+            ipcRenderer.send('connect-aerial', process.env.REACT_APP_AERIAL_SSID, process.env.REACT_APP_AERIAL_PASS);
 
-        return new Promise(resolve => {
+            return new Promise(resolve => {
             
-            ipcRenderer.on('connect-aerial', (event: any, arg: boolean) => {
-            
-                resolve(arg);
+                ipcRenderer.on('connect-aerial', (event: any, arg: boolean) => {
+                
+                    resolve(arg);
+                });
             });
-        });
+        }
+        else
+        {
+            ipcRenderer.send('connect-land', process.env.REACT_APP_LAND_SSID, process.env.REACT_APP_LAND_PASS);
+
+            return new Promise(resolve => {
+            
+                ipcRenderer.on('connect-land', (event: any, arg: boolean) => {
+                
+                    resolve(arg);
+                });
+            });
+        }
     }
 
     startTimer(step4: boolean = true)
@@ -210,7 +225,7 @@ class Console extends React.Component<ConsoleProps, ConsoleStates>
             case 5:
                 return <Step6 stepStatus={this.state.stepStatus[5]} data={this.state.step6_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)}></Step6>;
             case 6:
-                return <Step7 stepStatus={this.state.stepStatus[6]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} navInstructions={this.state.step6_data.navInstructions}></Step7>;
+                return <Step7 stepStatus={this.state.stepStatus[6]} data={this.state.step7_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} navInstructions={this.state.step6_data.navInstructions} directionFacing={this.state.step2_data.directionFacing}></Step7>;
             case 7:
                 return <Step8 stepStatus={this.state.stepStatus[7]} data={this.state.step8_data} func_onUpdateStepStatus={this.props.func_onUpdateStepStatus} func_onNextButtonClick={this.props.func_onNextButtonClick} func_checkForErrors={this.checkForErrors.bind(this)} func_connectToDrone={this.connectToDrone.bind(this)} func_startTimer={this.startTimer.bind(this)} func_stopTimer={this.stopTimer.bind(this)}></Step8>
         }

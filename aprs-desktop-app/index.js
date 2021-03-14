@@ -128,6 +128,26 @@ ipcMain.on('connect-aerial', (event, arg1, arg2) => {
     });
 });
 
+ipcMain.on('connect-land', (event, arg1, arg2) => {
+
+    const ssid = landSSID = arg1;
+    const pass = landPass = arg2;
+    wifi.connect({ssid: ssid, password: pass}, error => {
+
+        if(error)
+        {
+            event.sender.send('connect-land', false);
+        }
+        else
+        {
+            event.sender.send('connect-land', true);
+        }
+    });
+});
+
+
+
+
 ipcMain.on('save-video-data', (event, arg1) => {
 
     const encodedVideo = arg1;

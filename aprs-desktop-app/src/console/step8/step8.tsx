@@ -39,7 +39,7 @@ class Step8 extends React.Component<Step8Props, Step8States>
             tempData.progressVal = "0";
             tempData.progressMessage = "Establishing Connection to Land Drone...";
             this.setState({data: tempData});
-            var connected = await this.props.func_connectToDrone();
+            var connected = await this.props.func_connectToDrone(true);
 
             if(connected)
             {
@@ -78,7 +78,7 @@ class Step8 extends React.Component<Step8Props, Step8States>
 
     async sendLaunch()
     {
-        const response = await fetch('http://192.168.50.1:5000/', {method: 'GET'});
+        const response = await fetch('http://192.168.50.1:5302/launch', {method: 'GET'});
         return response.status == 200;
     }
 
