@@ -41,6 +41,9 @@ class uploadInstructions(Resource):
         dill.dump(data_json["direction"], file2)
         file2.close()
 
+        print(type(data_json['nav']))
+        print(type(data_json["direction"]))
+
         return "file recieved"
 
 
