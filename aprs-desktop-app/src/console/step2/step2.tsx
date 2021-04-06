@@ -166,7 +166,7 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
         if(final && area <= 1000000)
         {
-            tempData.mappingArea = this.getMappingInstructions(width, height, offset_x, offset_y);
+            tempData.mappingArea = this.getMappingInstructions(width, height, 1, -1, bounds);
             tempData.createRectangle = false;
             tempData.directionFacing = directionFacing;
         }
@@ -174,16 +174,18 @@ class Step2 extends React.Component<Step2Props, Step2State>
         this.setState({data: tempData});
     }
 
-    getMappingInstructions(width: number, height: number, offset_x: number, offset_y: number)
+    getMappingInstructions(width: number, height: number, offset_x: number, offset_y: number, bounds: Leaflet.LatLngBounds)
     {
-        const altitude = 20; //also correlates to quadrant size
-        const angleDrone = 270;
+        const altitude = 10; //quadrant distance center to center = altitude * fov_calc
+        const angleDrone = 0;
         const fov_calc = 0.83909963;
         const meter_to_latlng = 0.0000089;
 
         const quadrant_size = altitude*fov_calc;
-        const current_lat = this.state.data.mapCenter[0];
-        const current_lng = this.state.data.mapCenter[1];
+        //const current_lat = this.state.data.mapCenter[0];
+        //const current_lng = this.state.data.mapCenter[1];
+        const current_lat = bounds.getNorthWest().lat;
+        const current_lng = bounds.getNorthWest().lng;
 
         var instructions: string = "";
         
@@ -193,6 +195,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
         var index = 1;
         var finalRows = 0;
         var finalCols = 0;
+        var temp_row = 0;
+        var temp_col = 0;
         while(temp_width > 0)
         {
             var temp_height = height;
@@ -201,6 +205,9 @@ class Step2 extends React.Component<Step2Props, Step2State>
             {
                 while(temp_height > 0)
                 {
+                    if(index==1)
+                        finalRows ++;
+
                     var bottom_left = Leaflet.latLng(temp_lat, temp_lng);
 
                     var temp_top_right_lat = temp_lat + (offset_y * meter_to_latlng * quadrant_size);
@@ -209,14 +216,13 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(bottom_left, top_right)).getCenter();
 
-                    instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
+                    instructions += quadrant_center.lat + "," + quadrant_center.lng + "," + (temp_row) + "," + (temp_col) + '\n';
                     
                     temp_lat += offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
-
-                    if(index==1)
-                        finalRows ++;
+                    temp_row ++;
                 }
+                temp_row --;
             }
             else
             {
@@ -230,17 +236,20 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
                     var quadrant_center = (Leaflet.latLngBounds(top_left, top_right)).getCenter();
 
-                    instructions += quadrant_center.lat + "," + quadrant_center.lng + '\n';
+                    instructions += quadrant_center.lat + "," + quadrant_center.lng + "," + (temp_row) + "," + (temp_col) + '\n';
                     
                     temp_lat -= offset_y * meter_to_latlng * quadrant_size;
                     temp_height -= quadrant_size;
+                    temp_row --;
                 }
+                temp_row ++;
             }
 
             temp_lng += (offset_x * meter_to_latlng * quadrant_size) / Math.cos(temp_lat * .018);
             temp_width -= quadrant_size;
             index ++;
             finalCols ++;
+            temp_col ++;
         }
 
         //instructions += 0 + "," + 0;
