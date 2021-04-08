@@ -181,7 +181,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
         const fov_calc = 0.83909963;
         const meter_to_latlng = 0.0000089;
 
-        const quadrant_size = altitude*fov_calc;
+        const quadrant_size = 5;
+        //const quadrant_size = altitude*fov_calc;
         //const current_lat = this.state.data.mapCenter[0];
         //const current_lng = this.state.data.mapCenter[1];
         const current_lat = bounds.getNorthWest().lat;
