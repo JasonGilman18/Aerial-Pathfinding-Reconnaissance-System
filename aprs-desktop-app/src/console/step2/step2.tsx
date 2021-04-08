@@ -256,7 +256,8 @@ class Step2 extends React.Component<Step2Props, Step2State>
 
         //var finalRows = index;
         //var finalCols = Math.ceil(totalCoordinates / finalRows);
-        var preReq: string = altitude + "," + angleDrone + "\n" + finalRows + "," + finalCols + "\n";
+        //var preReq: string = altitude + "," + angleDrone + "\n" + finalRows + "," + finalCols + "\n";
+        var preReq: string = altitude + "," + angleDrone + "\n";
         var finalInstructions = preReq + instructions;
         
         console.log("\n\n\n\nSTART:\n\n" + finalInstructions + "\n\n\n");
