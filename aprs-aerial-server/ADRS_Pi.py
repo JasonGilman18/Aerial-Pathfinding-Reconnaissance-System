@@ -133,7 +133,10 @@ def read_add_waypoints(vehicle):
     mission_pts = []
 
     print("Opening Locations")
-    file_loc = open('locations.txt', 'r')
+    
+    #locations_path = 'location.txt'
+    locations_path = "/home/pi/Desktop/aprs-aerial-server/static/coordinates.txt"
+    file_loc = open(locations_path, 'r')
 
     lines = file_loc.readlines()
     line_split = lines[0].split(',')
