@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Imports needed for library code
 import cv2 as cv
 import numpy as np
@@ -20,7 +22,7 @@ def overlap(left, l_amt, right, r_amt):
     return np.hstack((left[:, :-l_amt], right[:, r_amt:]))
 
 
-def seam(left, l_offset, right, r_offset, vtrim=1/3):
+def seam(left, l_offset, right, r_offset, vtrim=1/4, cols=32):
     """Calculates each pixel difference in values along a vertical line.
     Same argument semantics as overlap.
 
@@ -30,13 +32,13 @@ def seam(left, l_offset, right, r_offset, vtrim=1/3):
     r_amt -- index of slice from left side of right
     vtrim -- fraction of image height to ignore from vertical edges
              ^ Useful to counter lens distortion at edges
+    cols  -- number of columns to compare on each side
     """
-    # TODO: Consider comparing more edge pixels than just 1 column each
     # Decide how many pixels to ignore from vertical edges
     height = min(np.shape(left)[0], np.shape(right)[0])
     vtrim = int(height * vtrim)
     # Collect differences between x-positions in depth maps
-    return right[vtrim:-vtrim, r_offset] - left[vtrim:-vtrim, -l_offset]
+    return right[vtrim:-vtrim, r_offset:r_offset+cols] - left[vtrim:-vtrim, -l_offset:-l_offset+cols]
 
 
 def seam_heuristic(seam):
@@ -96,10 +98,10 @@ def merge_depths(disps):
     """
     # Apply merge_row on each row, then transpose and merge again
     rows = list(map(merge_row, disps))
-    rows = list(map(np.transpose, disps))
+    rows = list(map(np.transpose, rows))
     merged = merge_row(rows)
     merged = np.transpose(merged)
-    return merged[0]
+    return merged
 
 
 

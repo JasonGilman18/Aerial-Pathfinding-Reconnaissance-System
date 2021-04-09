@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Imports needed for library code
 import cv2 as cv
 # Imports needed for unit test

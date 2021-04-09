@@ -135,25 +135,35 @@ class Step6 extends React.Component<Step6Props, Step6State>
         tempData.progressMessage = "Generating path...";
         this.setState({data: tempData});
 
-        const response = await fetch('http://localhost:5000/cvpath', {method: 'GET'});
-        if(response.status == 200)
+        const inputParams = this.getInputParams();
+        const response2 = await fetch('http://localhost:5000/cvdepth2' + inputParams, {method: 'GET'});
+        if(response2.status == 200)
         {
-            var tempData2 = this.state.data;
-            tempData2.progressVal = "100";
-            tempData2.progressMessage = "Path generated.";
-            tempData2.finishedAnalysis = true;
-            
-            var responseObject = await response.json();
-            tempData2.pathMap = responseObject.img;
-            tempData2.navInstructions = responseObject.nav;
-            
-            this.setState({data: tempData2});
+            const response = await fetch('http://localhost:5000/cvpath', {method: 'GET'});
+            if(response.status == 200)
+            {
+                var tempData2 = this.state.data;
+                tempData2.progressVal = "100";
+                tempData2.progressMessage = "Path generated.";
+                tempData2.finishedAnalysis = true;
+                
+                var responseObject = await response.json();
+                tempData2.pathMap = responseObject.img;
+                tempData2.navInstructions = responseObject.nav;
+                
+                this.setState({data: tempData2});
+            }
+            else
+            {
+                this.props.func_onUpdateStepStatus(5, this.props.func_checkForErrors(this.state.data));
+                this.setState({errorMsg: ["Unable to finish software analysis", "Error occured while generating path"]});
+            }
         }
         else
         {
             this.props.func_onUpdateStepStatus(5, this.props.func_checkForErrors(this.state.data));
-            this.setState({errorMsg: ["Unable to finish software analysis", "Error occured while generating path"]});
-        }
+            this.setState({errorMsg: ["Unable to finish software analysis", "Error occured while creating disparity maps"]});
+        }   
     }
 
     getInputParams()

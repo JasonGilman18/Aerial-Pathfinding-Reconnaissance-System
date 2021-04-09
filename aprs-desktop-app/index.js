@@ -145,22 +145,21 @@ ipcMain.on('connect-land', (event, arg1, arg2) => {
     });
 });
 
+ipcMain.on('save-image-data', (event, arg1) => {
 
-
-
-ipcMain.on('save-video-data', (event, arg1) => {
-
-    const encodedVideo = arg1;
+    const image_pairs = arg1;
     
-    fs.writeFile('./static/encodedVideos/videoFromServer.txt', encodedVideo, (err) => {
+    var noErr = true;
+    image_pairs.forEach(image_pair => {
+        var decoded_image = Buffer.from(image_pair.encoded_image.substring(2, image_pair.encoded_image.length-1), 'base64');
+        fs.writeFile('./static/images/' + image_pair.filename, decoded_image, (err) => {
 
-        if(err)
-        {
-            event.sender.send('save-video-data', false);
-        }
-        else
-        {
-            event.sender.send('save-video-data', true);
-        }
+            if(err)
+            {
+                noErr = false;
+            }
+        });
     });
+
+    event.sender.send('save-image-data', noErr)
 });

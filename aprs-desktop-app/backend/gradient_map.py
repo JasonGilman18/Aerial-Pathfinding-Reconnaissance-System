@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Imports needed for library code
 import numpy as np
 # Imports needed for unit test

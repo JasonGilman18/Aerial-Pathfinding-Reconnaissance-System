@@ -2,7 +2,7 @@ import numpy as np
 
 def is_obstacle(chunk):
     # Return 0 if the chunk should be reduced to an obstacle.
-    threshold = 0 # Could try np.average(np.shape(chunk))
+    threshold = 1 # Could try np.average(np.shape(chunk))
     if np.count_nonzero(chunk==0) > threshold:
         return 0
     else:

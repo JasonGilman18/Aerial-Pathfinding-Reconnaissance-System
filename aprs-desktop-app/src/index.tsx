@@ -19,7 +19,8 @@ class Main extends React.Component<MainProps, MainStates>
         super(props);
         this.state = {
                         selectedStep: 0, 
-                        stepStatus: ["inprogress", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete"], 
+                        stepStatus: ["inprogress", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete", "incomplete"],
+                        //stepStatus: ["complete", "complete", "complete", "complete", "incomplete", "incomplete", "incomplete", "incomplete"],
                         progressMessages: ["----Welcome----"]
                     };
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Imports needed for library code
 import cv2 as cv
 import numpy as np
@@ -28,7 +30,8 @@ def background_filter(video, points=5):
             frames.append(frame)
     # If there are not enough frames, we can not calculate a median.
     if len(frames) < 2:
-        raise RuntimeError("Not enough frames to calculate a median.")
+        print("Warning: Not enough frames to calculate a median.")
+        #raise RuntimeError("Not enough frames to calculate a median.")
     # Calculate a median frame among those sampled and return it.
     medianFrame = np.median(frames, axis=0).astype(dtype=np.uint8)
     return medianFrame
